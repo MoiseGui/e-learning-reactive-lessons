@@ -168,14 +168,18 @@ class _HomePageState extends State<HomePage> {
     CardClass card;
     String title;
     Color? color;
+    String? username;
+    String? image;
 
-    for (var i = 0; i < data.titles.length; i++) {
+    for (var i = 0; i < data.courses.length; i++) {
       // title = data.titles[_random.nextInt(data.titles.length)];
       // color = data.colors[_random.nextInt(data.colors.length)];
-      title = data.titles[i];
-      color = mainColor;
+      title = data.courses[i].title!;
+      color = data.courses[i].color!;
+      username = data.courses[i].username!;
+      image = data.courses[i].image!;
 
-      card = CardClass(title: title, colorTheme: color, username: "MoiseGui");
+      card = CardClass(title: title, colorTheme: color, username: username, image: image);
       list.add(card);
     }
 

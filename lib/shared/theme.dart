@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 const double horizontalMargin = 24.0;
 
 Color mainColor = Color(0xFF070D0C);
+Color mainColor2 = Color(0xFF0F2422);
 Color secondColor = Color(0xFF4ecdc4);
 Color successColor = Color(0xFF00ca71);
 Color warningColor = Color(0xFFffe66d);

@@ -4,12 +4,14 @@ class CardClass extends StatelessWidget {
   String? title;
   String? username;
   final colorTheme;
+  String? image;
 
   CardClass({
     Key? key,
     this.title,
     this.username,
     this.colorTheme,
+    this.image
   }) : super(key: key);
 
   @override
@@ -42,7 +44,7 @@ class CardClass extends StatelessWidget {
                   padding: const EdgeInsets.all(20),
                   width: sizeScreen.width,
                   decoration: BoxDecoration(
-                    color: colorTheme,
+                    color: mainColor2,
                     borderRadius: const BorderRadius.only(
                       topRight: Radius.circular(10),
                       topLeft: Radius.circular(10),
@@ -82,12 +84,11 @@ class CardClass extends StatelessWidget {
             Expanded(
               flex: 3,
               child: Container(
-                decoration: BoxDecoration(
-                  // color: secondColor,
-                  border: Border.all(
-                    color: mainColor,
-                    width: 1,
-                  ),
+                decoration: const BoxDecoration(
+                  image: DecorationImage(
+                      alignment: Alignment(-.2, 0),
+                      image: NetworkImage('https://image.freepik.com/free-photo/close-up-image-programer-working-his-desk-office_1098-18707.jpg'),
+                      fit: BoxFit.cover),
                 ),
               ),
             ),
@@ -102,7 +103,7 @@ class CardClass extends StatelessWidget {
                   style: ElevatedButton.styleFrom(
                       textStyle: const TextStyle(fontSize: 20),
                       fixedSize: const Size.fromWidth(308),
-                      primary: secondColor,
+                      primary: mainColor,
                       shape: const RoundedRectangleBorder(
                         borderRadius: BorderRadius.only(
                             bottomLeft: Radius.circular(10),
