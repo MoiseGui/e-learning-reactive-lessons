@@ -3,13 +3,16 @@ import 'package:elearning/models/models.dart';
 import 'package:elearning/models/quiz.dart';
 import 'package:elearning/shared/theme.dart';
 import 'package:elearning/theme.dart';
-import 'package:elearning/utils/YoutubeUtils.dart';
+import 'package:elearning/utils/youtube_utils.dart';
+import 'package:elearning/utils/youtube_video_utils.dart';
+import 'package:elearning/widgets/widgets.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:material_dialogs/material_dialogs.dart';
 import 'package:material_dialogs/widgets/buttons/icon_button.dart';
 import 'package:material_dialogs/widgets/buttons/icon_outline_button.dart';
 import 'package:video_player/video_player.dart';
+import 'package:elearning/responsive.dart';
 
 class CourseDetail extends StatefulWidget {
   final String title;
@@ -30,6 +33,8 @@ class _CourseDetailState extends State<CourseDetail> {
 
   late final VideoQuiz videoQuiz;
 
+  Duration? quizToRedoPosition;
+
   @override
   void initState() {
     super.initState();
@@ -44,16 +49,17 @@ class _CourseDetailState extends State<CourseDetail> {
   }
 
   Future<void> initializePlayer() async {
-    // var dataSource = await YoutubeUtils.extractVideoUrl(
-    //     "https://www.youtube.com/watch?v=Y9Wjnc8cWa0&t=331s");
+    // Youtube video converter has a problem on web version: To fix later
+    var dataSource = await YoutubeUtils.extractVideoUrl("https://www.youtube.com/watch?v=6bzqaG2vPZs");
+    // var dataSource = await YoutubeVideoUtils.getVideoUrlFromYoutube("https://www.youtube.com/watch?v=6bzqaG2vPZs");
     _videoPlayerController = VideoPlayerController.network(
-      "https://assets.mixkit.co/videos/preview/mixkit-daytime-city-traffic-aerial-view-56-large.mp4"
-      //   dataSource
+      // "https://assets.mixkit.co/videos/preview/mixkit-daytime-city-traffic-aerial-view-56-large.mp4"
+        dataSource
     );
     await Future.wait([
       _videoPlayerController.initialize(),
     ]);
-    _videoPlayerController.addListener(() {                      //custom Listner
+    _videoPlayerController.addListener(() {  //custom Listner
       _controlVideo(_videoPlayerController.value.position);
     },);
     videoQuiz = VideoQuiz();
@@ -122,16 +128,29 @@ class _CourseDetailState extends State<CourseDetail> {
     // _continuePlaying();
   }
 
-  _continuePlayingFrom(Duration duration){
-    _goBackTo(duration);
+  _continuePlayingFrom(Duration beginTime, Duration endTime){
+    _goBackTo(beginTime);
     _continuePlaying();
+    Future.delayed(const Duration(milliseconds: 1000), () {
+      // Do something
+      quizToRedoPosition = Duration(seconds: endTime.inSeconds);
+      print("hehe: "+quizToRedoPosition.toString());
+    });
   }
 
   _controlVideo(position) async {
-    // print("Video track " + position.toString());
-    Quiz? quiz = videoQuiz.getQuizByMoment(position);
+    print("Video track " + position.toString());
+    print("Quiz to redo $quizToRedoPosition");
+    Quiz? quiz;
+    if(quizToRedoPosition != null && videoQuiz.compareDurations(quizToRedoPosition!, position) == 0) {
+      quiz = videoQuiz.getQuizByMoment(position, false);
+      quizToRedoPosition = null;
+    }
+    else {
+      quiz = videoQuiz.getQuizByMoment(position, true);
+    }
     if(quiz != null){
-      // print("FOUND");
+      print("FOUND");
       _videoPlayerController.pause();
       _showDialog(context, quiz);
     }
@@ -154,8 +173,8 @@ class _CourseDetailState extends State<CourseDetail> {
             break;
           }
           case -1: {
+            _continuePlayingFrom(quiz.beginTime, quiz.endTime);
             Navigator.of(context).pop();
-            _continuePlayingFrom(quiz.beginTime);
             break;
           }
           default: break;
@@ -167,7 +186,7 @@ class _CourseDetailState extends State<CourseDetail> {
         if(_selectedRadio == 1){
           Dialogs.bottomMaterialDialog(
               color: mainColor2,
-              msg: 'Congratulations, you won 500 points',
+              msg: 'Tu peux à présent continuer',
               title: 'Bien joué',
               context: context,
               actions: [
@@ -177,7 +196,7 @@ class _CourseDetailState extends State<CourseDetail> {
                     Navigator.of(context).pop();
                     _validateResult();
                   },
-                  text: 'Claim',
+                  text: 'Continuer',
                   iconData: Icons.done,
                   color: Colors.blue,
                   textStyle: const TextStyle(color: Colors.white),
@@ -220,6 +239,7 @@ class _CourseDetailState extends State<CourseDetail> {
 
       }
 
+      //TODO: Make the content of this form dynamic, ie bring it from the quiz object
       return AlertDialog(
           shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(20.0)),
@@ -228,19 +248,6 @@ class _CourseDetailState extends State<CourseDetail> {
               return Stack(
                 overflow: Overflow.visible,
                 children: <Widget>[
-                  // Positioned(
-                  //   right: -40.0,
-                  //   top: -40.0,
-                  //   child: InkResponse(
-                  //     onTap: () {
-                  //       Navigator.of(context).pop();
-                  //     },
-                  //     child: const CircleAvatar(
-                  //       child: Icon(Icons.close),
-                  //       backgroundColor: Colors.red,
-                  //     ),
-                  //   ),
-                  // ),
                   Form(
                     key: _formKey,
                     child: Column(
@@ -259,10 +266,11 @@ class _CourseDetailState extends State<CourseDetail> {
                           ),
                         ),
                         const Divider(height: 20.0, color: Colors.grey,),
+                        // TODO: Make this content dynamic
                         RichText(
                           textAlign: TextAlign.left,
                           text: const TextSpan(
-                              text: "Quelle est selon toi le plus important ?",
+                              text: "Qu'est ce qui ne fait pas partie du MVC ?",
                               style: TextStyle(
                                 fontWeight: FontWeight.w400,
                                 fontSize: 14,
@@ -275,7 +283,7 @@ class _CourseDetailState extends State<CourseDetail> {
                         const SizedBox(height: 20),
                         Row(
                           children: <Widget>[
-                            const Text("L'ergonomie"),
+                            const Text("Modélisation"),
                             const Spacer(),
                             Radio(
                               activeColor: Colors.blue,
@@ -291,7 +299,7 @@ class _CourseDetailState extends State<CourseDetail> {
                         ),
                         Row(
                           children: <Widget>[
-                            const Text("Le design"),
+                            const Text("View"),
                             const Spacer(),
                             Radio(
                               activeColor: Colors.blue,
@@ -307,7 +315,7 @@ class _CourseDetailState extends State<CourseDetail> {
                         ),
                         Row(
                           children: <Widget>[
-                            const Text("Les fonctionalités"),
+                            const Text("Controller"),
                             const Spacer(),
                             Radio(
                               activeColor: Colors.blue,
@@ -365,7 +373,7 @@ class _CourseDetailState extends State<CourseDetail> {
           child: Column(
             children: <Widget>[
               SizedBox(
-                height: 200,
+                height: Responsive.isDesktop(context) ? 500 : 200,
                 child: Center(
                   child: _chewieController != null &&
                       _chewieController!
@@ -393,7 +401,7 @@ class _CourseDetailState extends State<CourseDetail> {
               const Padding(
                 padding: EdgeInsets.only(left: 10, right: 10),
                 child: Text(
-                  "       L'apprentissage automatique (en anglais : machine learning, litt. « apprentissage machine »), apprentissage artificiel1 ou apprentissage statistique est un champ d'étude de l'intelligence artificielle qui se fonde sur des approches mathématiques et statistiques pour donner aux ordinateurs la capacité d'« apprendre » à partir de données, c'est-à-dire d'améliorer leurs performances à résoudre des tâches sans être explicitement programmés pour chacune. Plus largement, il concerne la conception, l'analyse, l'optimisation, le développement et l'implémentation de telles méthodes.",
+                  "       MVC est un modèle architectural composé de trois parties : modèle, vue, contrôleur . Modèle : gère la logique des données. View : Il affiche les informations du modèle à l'utilisateur. Contrôleur : il contrôle le flux de données dans un objet de modèle et met à jour la vue chaque fois que les données changent.",
                   style: TextStyle(fontSize: 16),
                 ),
               ),
@@ -401,14 +409,14 @@ class _CourseDetailState extends State<CourseDetail> {
               const Padding(
                 padding: EdgeInsets.only(left: 10, right: 10),
                 child: Text(
-                  "       L'apprentissage automatique comporte généralement deux phases. La première consiste à estimer un modèle à partir de données, appelées observations, qui sont disponibles et en nombre fini, lors de la phase de conception du système. L'estimation du modèle consiste à résoudre une tâche pratique, telle que traduire un discours, estimer une densité de probabilité, reconnaître la présence d'un chat dans une photographie ou participer à la conduite d'un véhicule autonome. Cette phase dite « d'apprentissage » ou « d'entraînement » est généralement réalisée préalablement à l'utilisation pratique du modèle. La seconde phase correspond à la mise en production : le modèle étant déterminé, de nouvelles données peuvent alors être soumises afin d'obtenir le résultat correspondant à la tâche souhaitée. En pratique, certains systèmes peuvent poursuivre leur apprentissage une fois en production, pour peu qu'ils aient un moyen d'obtenir un retour sur la qualité des résultats produits. ",
+                  "       Le pattern MVC permet de bien organiser son code source. Il va vous aider à savoir quels fichiers créer, mais surtout à définir leur rôle. Le but de MVC est justement de séparer la logique du code en trois parties que l'on retrouve dans des fichiers distincts.",
                   style: TextStyle(fontSize: 16),),
               ),
               const SizedBox(height: 20),
               const Padding(
                 padding: EdgeInsets.only(left: 10, right: 10),
                 child: Text(
-                  "       Selon les informations disponibles durant la phase d'apprentissage, l'apprentissage est qualifié de différentes manières. Si les données sont étiquetées (c'est-à-dire que la réponse à la tâche est connue pour ces données), il s'agit d'un apprentissage supervisé. On parle de classification ou de classement3 si les étiquettes sont discrètes, ou de régression si elles sont continues. Si le modèle est appris de manière incrémentale en fonction d'une récompense reçue par le programme pour chacune des actions entreprises, on parle d'apprentissage par renforcement. Dans le cas le plus général, sans étiquette, on cherche à déterminer la structure sous-jacente des données (qui peuvent être une densité de probabilité) et il s'agit alors d'apprentissage non supervisé. L'apprentissage automatique peut être appliqué à différents types de données, tels des graphes, des arbres, des courbes, ou plus simplement des vecteurs de caractéristiques, qui peuvent être des variables qualitatives ou quantitatives continues ou discrètes. ",
+                  "       Modèle\n    Le composant Modèle correspond à toute la logique liée aux données avec laquelle l'utilisateur travaille. Cela peut représenter soit les données qui sont transférées entre les composants View et Controller, soit toute autre donnée liée à la logique métier. Par exemple, un objet Customer récupérera les informations client de la base de données, les manipulera et mettra à jour les données dans la base de données ou les utilisera pour restituer des données.",
                   style: TextStyle(fontSize: 16),),
               ),
             ],

@@ -3,6 +3,11 @@ part of 'models.dart';
 class DataDummy {
   List<Course> courses = [
     Course(
+        "Le modèle MVC",
+        "https://image.freepik.com/free-photo/close-up-image-programer-working-his-desk-office_1098-18707.jpg",
+        "MoiseGui",
+        mainColor),
+    Course(
         "Machine Learning",
         "https://image.freepik.com/free-photo/close-up-image-programer-working-his-desk-office_1098-18707.jpg",
         "MoiseGui",
@@ -46,8 +51,8 @@ class VideoQuiz {
 
   VideoQuiz() {
     for (int i = 0; i < secs.length; i++) {
-      Quiz quiz = Quiz("quiz ${i + 1}", Duration(seconds: secs[i]),
-          Duration(seconds: secs[i] + 5));
+      Quiz quiz = Quiz("quiz", Duration(seconds: secs[i]),
+          Duration(seconds: secs[i] + 10));
       videoQuiz.add(quiz);
     }
   }
@@ -56,15 +61,28 @@ class VideoQuiz {
     return duration.toString().split('.')[0];
   }
 
-  Quiz? getQuizByMoment(Duration duration) {
+  int compareDurations(Duration d1, Duration d2){
+    return removeMillis(d1).compareTo(removeMillis(d2));
+  }
+
+  Quiz? getQuizByMoment(Duration duration, bool careIfShown) {
     Quiz? quizFound;
     for (var quiz in videoQuiz) {
     print("hey ${duration} ${quiz.endTime}");
-      if (removeMillis(quiz.endTime).compareTo(removeMillis(duration)) == 0 && ! quiz.isShown()!) {
-        quiz.setShown(true);
-        quizFound = quiz;
-        print("Video isshown ${quiz.isShown()}");
-        break;
+      if (compareDurations(quiz.endTime, duration) == 0) {
+        if(!quiz.isShown()!){
+          quiz.setShown(true);
+          quizFound = quiz;
+          print("Video isshown ${quiz.isShown()}");
+          break;
+        }
+        else{
+          if(!careIfShown){
+            quizFound = quiz;
+            print("Video isshown ${quiz.isShown()}");
+            break;
+          }
+        }
       }
     }
     return quizFound;

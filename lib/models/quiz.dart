@@ -1,3 +1,5 @@
+//TODO: Add the form information here
+//TODO: Question title, Question choices, unique or multiple answer ?, correct answer(s)
 class Quiz {
   String text;
   Duration beginTime;
