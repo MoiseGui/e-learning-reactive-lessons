@@ -3,7 +3,6 @@
 import 'package:elearning/models/models.dart';
 import 'package:elearning/shared/theme.dart';
 import 'package:elearning/widgets/widgets.dart';
-import 'package:elearning/responsive.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';

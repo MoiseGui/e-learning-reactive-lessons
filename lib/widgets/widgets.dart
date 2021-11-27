@@ -16,3 +16,4 @@ part 'primary_button.dart';
 part 'secondary_button.dart';
 part 'slide_drawer.dart';
 part 'empty_widget.dart';
+part '../responsive.dart';

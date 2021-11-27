@@ -30,8 +30,7 @@ class CardClass extends StatelessWidget {
       ),
       child: Container(
         height: 300,
-        //TODO: MAke the container not have a fix value, but reponsive
-        width: 308,
+        width: Responsive.isDesktop(context) ? 308 : 400,
         decoration: BoxDecoration(borderRadius: BorderRadius.circular(10)),
         child: Column(
           children: [
@@ -103,7 +102,7 @@ class CardClass extends StatelessWidget {
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
                       textStyle: const TextStyle(fontSize: 20),
-                      fixedSize: const Size.fromWidth(308),
+                      fixedSize: Responsive.isDesktop(context) ? const Size.fromWidth(308) : const Size.fromWidth(400),
                       primary: mainColor,
                       shape: const RoundedRectangleBorder(
                         borderRadius: BorderRadius.only(

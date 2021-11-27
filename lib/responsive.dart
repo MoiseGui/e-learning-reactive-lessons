@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+part of 'widgets/widgets.dart';
 
 // We will modify it once we have our final design
 
