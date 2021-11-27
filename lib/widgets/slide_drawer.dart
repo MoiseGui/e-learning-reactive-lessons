@@ -13,17 +13,17 @@ class SlideDrawer extends StatelessWidget {
         padding: const EdgeInsets.only(right: 20),
         child: ListView(
           children: [
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             SecondaryButton(
               title: "Class",
-              icon: Padding(
+              icon: const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 24),
                 child: Icon(LineIcons.home),
               ),
               focus: true,
-              color: secondColor,
-              backgroundColor: secondColor.withOpacity(0.03),
-              radius: BorderRadius.only(
+              color: greyColor,
+              backgroundColor: greyColor.withOpacity(0.03),
+              radius: const BorderRadius.only(
                 topRight: Radius.circular(20),
                 bottomRight: Radius.circular(20),
               ),
@@ -35,14 +35,14 @@ class SlideDrawer extends StatelessWidget {
             ),
             SecondaryButton(
               title: "Calendar",
-              icon: Padding(
+              icon: const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 24),
                 child: Icon(LineIcons.calendar),
               ),
               focus: false,
-              color: secondColor,
+              color: greyColor,
               // backgroundColor: greyColor.withOpacity(0.3),
-              radius: BorderRadius.only(
+              radius: const BorderRadius.only(
                 topRight: Radius.circular(20),
                 bottomRight: Radius.circular(20),
               ),
@@ -61,13 +61,13 @@ class SlideDrawer extends StatelessWidget {
 
             SecondaryButton(
               title: "Archived Class",
-              icon: Padding(
+              icon: const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 24),
                 child: Icon(LineIcons.archive),
               ),
               focus: false,
-              color: secondColor,
-              radius: BorderRadius.only(
+              color: greyColor,
+              radius: const BorderRadius.only(
                 topRight: Radius.circular(20),
                 bottomRight: Radius.circular(20),
               ),
@@ -80,13 +80,13 @@ class SlideDrawer extends StatelessWidget {
             ),
             SecondaryButton(
               title: "Setting",
-              icon: Padding(
+              icon: const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 24),
                 child: Icon(LineIcons.userCog),
               ),
               focus: false,
-              color: secondColor,
-              radius: BorderRadius.only(
+              color: greyColor,
+              radius: const BorderRadius.only(
                 topRight: Radius.circular(20),
                 bottomRight: Radius.circular(20),
               ),

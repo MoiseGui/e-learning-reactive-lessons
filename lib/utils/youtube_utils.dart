@@ -25,17 +25,19 @@ class YoutubeUtils{
   }
 
   static Future<String> extractVideoUrl(String youtubeUrl) async {
-    // if (youtube) {
-    final extractor = YoutubeExplode();
-    final videoId = convertUrlToId(youtubeUrl);
-    final streamManifest = await extractor.videos.streamsClient.getManifest(videoId);
-    final streamInfo = streamManifest.muxed.withHighestBitrate();
-    extractor.close();
+    try{
+      final extractor = YoutubeExplode();
+      final videoId = convertUrlToId(youtubeUrl);
+      final streamManifest = await extractor.videos.streamsClient.getManifest(videoId);
+      final streamInfo = streamManifest.muxed.withHighestBitrate();
+      extractor.close();
 
-    final url = streamInfo.url.toString();
-    print('*******: $url');
-    return url;
-    // }
-    // return null;
+      final url = streamInfo.url.toString();
+      print('*******: $url');
+      return url;
+    }
+    catch(e){
+      return '';
+    }
   }
 }

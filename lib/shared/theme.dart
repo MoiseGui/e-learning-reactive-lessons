@@ -11,7 +11,7 @@ Color warningColor = Color(0xFFffe66d);
 Color errorColor = Color(0xFFff6b6b);
 Color textNumberColor = Color(0xFFffbf69);
 Color greyColor = Color(0xFFced4da);
-Color bgColor = Color(0xFFf7fff7);
+Color bgColor = Color(0xFF424242);
 Color blackColor = Colors.black87;
 
 TextStyle blackTextFont = GoogleFonts.raleway(
