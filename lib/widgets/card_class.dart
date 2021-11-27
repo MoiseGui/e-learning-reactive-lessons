@@ -30,6 +30,7 @@ class CardClass extends StatelessWidget {
       ),
       child: Container(
         height: 300,
+        //TODO: MAke the container not have a fix value, but reponsive
         width: 308,
         decoration: BoxDecoration(borderRadius: BorderRadius.circular(10)),
         child: Column(
