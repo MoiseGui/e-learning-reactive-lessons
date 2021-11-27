@@ -4,12 +4,33 @@ A new education erea
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+This app is new approch to education. Video based learning with much more fun
 
-A few resources to get you started if this is your first Flutter project:
+A realease apk is currently in the output folder
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+You can also check the web version here: [https://e-learning-fstg.web.app](https://e-learning-fstg.web.app)
+
+To run the app
+
+### Get dependencies
+```
+pub get
+```
+
+### Build
+#### For ANDROID
+```
+flutter build apk
+```
+Output apk will be in build/app/outputs/flutter-apk/app-release.apk
+#### For IOS
+```
+flutter build ios
+```
+#### For web
+```
+flutter build web
+```
 
 For help getting started with Flutter, view our
 [online documentation](https://flutter.dev/docs), which offers tutorials,
