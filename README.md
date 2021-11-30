@@ -36,7 +36,7 @@ flutter build web
 
 [Moïse Gui](https://github.com/MoiseGui) <br />
 [Ezaghab Chaimaa](https://github.com/EChaimaa) <br />
-[Hiba Benssouissi](https://github.com/HIBABENS)
+[Hiba Bensouissi](https://github.com/HIBABENS)
 
 For help getting started with Flutter, view our
 [online documentation](https://flutter.dev/docs), which offers tutorials,
