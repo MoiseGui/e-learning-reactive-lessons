@@ -160,25 +160,12 @@ class _HomePageState extends State<HomePage> {
   List<Widget> listClassCard() {
     List<Widget> list = [];
 
-    // final _random = Random();
-
     var data = DataDummy();
 
     CardClass card;
-    String title;
-    Color? color;
-    String? username;
-    String? image;
 
     for (var i = 0; i < data.courses.length; i++) {
-      // title = data.titles[_random.nextInt(data.titles.length)];
-      // color = data.colors[_random.nextInt(data.colors.length)];
-      title = data.courses[i].title!;
-      color = data.courses[i].color!;
-      username = data.courses[i].username!;
-      image = data.courses[i].image!;
-
-      card = CardClass(title: title, colorTheme: color, username: username, image: image);
+      card = CardClass(course: data.courses[i]);
       list.add(card);
     }
 

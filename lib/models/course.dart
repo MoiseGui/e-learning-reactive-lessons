@@ -1,10 +1,13 @@
 part of 'models.dart';
 
 class Course {
-  String? title;
+  String title;
+  String description;
   String? image;
-  String? username;
-  Color? color;
+  String video;
+  String username;
+  List<String> paragraphs;
+  List<Quiz> quiz;
 
-  Course(this.title, this.image, this.username, this.color);
+  Course(this.title, this.description, this.image, this.username, this.video, this.paragraphs, this.quiz);
 }

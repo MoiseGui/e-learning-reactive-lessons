@@ -1,22 +1,19 @@
 part of 'widgets.dart';
 
 class CardClass extends StatelessWidget {
-  String? title;
-  String? username;
-  final colorTheme;
-  String? image;
+  Course course;
 
-  CardClass({
-    Key? key,
-    this.title,
-    this.username,
-    this.colorTheme,
-    this.image
-  }) : super(key: key);
+  CardClass({Key? key, required this.course})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     var sizeScreen = MediaQuery.of(context).size;
+    String title = course.title;
+    String description = course.description;
+    String username = course.username;
+    String? image = course.image;
+
     return Card(
       borderOnForeground: true,
       elevation: 5,
@@ -84,11 +81,42 @@ class CardClass extends StatelessWidget {
             Expanded(
               flex: 3,
               child: Container(
-                decoration: const BoxDecoration(
+                child: Container(
+                  decoration:
+                      BoxDecoration(color: Colors.black.withOpacity(0.2)),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Text(
+                            description,
+                            maxLines: 5,
+                            overflow: TextOverflow.ellipsis,
+                            softWrap: true,
+                            style: whiteTextFont.copyWith(
+                              letterSpacing: 1,
+                              fontSize: 14,
+                              backgroundColor: Colors.black.withOpacity(0.7),
+                            ),
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+                decoration: BoxDecoration(
+                  color: Colors.black,
                   image: DecorationImage(
-                      alignment: Alignment(-.2, 0),
-                      image: NetworkImage('https://image.freepik.com/free-photo/close-up-image-programer-working-his-desk-office_1098-18707.jpg'),
-                      fit: BoxFit.cover),
+                    colorFilter:
+                        const ColorFilter.mode(Colors.black, BlendMode.dstATop),
+                    alignment: const Alignment(-.2, 0),
+                    image: image != null
+                        ? NetworkImage(image)
+                        : const NetworkImage(
+                            'https://image.freepik.com/free-photo/close-up-image-programer-working-his-desk-office_1098-18707.jpg') as ImageProvider,
+                    fit: BoxFit.cover,
+                  ),
                 ),
               ),
             ),
@@ -102,18 +130,21 @@ class CardClass extends StatelessWidget {
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
                       textStyle: const TextStyle(fontSize: 20),
-                      fixedSize: Responsive.isDesktop(context) ? const Size.fromWidth(308) : const Size.fromWidth(400),
+                      fixedSize: Responsive.isDesktop(context)
+                          ? const Size.fromWidth(308)
+                          : const Size.fromWidth(400),
                       primary: mainColor,
                       shape: const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.only(
-                            bottomLeft: Radius.circular(10),
-                            bottomRight: Radius.circular(10))
-                      )),
+                          borderRadius: BorderRadius.only(
+                              bottomLeft: Radius.circular(10),
+                              bottomRight: Radius.circular(10)))),
                   child: const Text("Suivre ce cours"),
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => CourseDetail(title: title.toString())),
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              CourseDetail(course: course)),
                     );
                     // Get.to(CourseDetail(title: title.toString()));
                   },

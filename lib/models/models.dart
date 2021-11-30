@@ -1,6 +1,8 @@
 import 'dart:convert';
+import 'dart:ffi';
 import 'dart:math';
 
+import 'package:elearning/models/choice.dart';
 import 'package:elearning/models/quiz.dart';
 import 'package:elearning/pages/course_detail.dart';
 import 'package:elearning/shared/theme.dart';

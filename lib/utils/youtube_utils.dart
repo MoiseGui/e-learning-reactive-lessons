@@ -17,23 +17,26 @@ class YoutubeUtils{
           r'^https:\/\/(?:www\.|m\.)?youtube(?:-nocookie)?\.com\/embed\/([_\-a-zA-Z0-9]{11}).*$'),
       RegExp(r'^https:\/\/youtu\.be\/([_\-a-zA-Z0-9]{11}).*$')
     ]) {
-      final Match match = exp.firstMatch(_url) as Match;
-      if (match != null && match.groupCount >= 1) return match.group(1);
+      final RegExpMatch? match = exp.firstMatch(_url);
+      if (match != null && match.groupCount >= 1) return match.group(match.groupCount - 1);
     }
 
     return null;
   }
 
-  static Future<String> extractVideoUrl(String youtubeUrl) async {
+  static Future<String> extractVideoUrl(String link) async {
     try{
       final extractor = YoutubeExplode();
-      final videoId = convertUrlToId(youtubeUrl);
+      final videoId = convertUrlToId(link);
+
+      // NOt a youtube url, just return it back
+      if(videoId == null) return link;
+
       final streamManifest = await extractor.videos.streamsClient.getManifest(videoId);
       final streamInfo = streamManifest.muxed.withHighestBitrate();
       extractor.close();
 
       final url = streamInfo.url.toString();
-      print('*******: $url');
       return url;
     }
     catch(e){

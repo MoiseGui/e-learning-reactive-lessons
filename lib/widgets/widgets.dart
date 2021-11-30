@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:elearning/models/models.dart';
 import 'package:elearning/pages/course_detail.dart';
 import 'package:elearning/shared/theme.dart';
 import 'package:flare_flutter/flare_actor.dart';
