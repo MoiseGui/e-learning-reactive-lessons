@@ -1,4 +1,4 @@
-import 'package:elearning/models/quiz.dart';
+part of 'services.dart';
 
 class QuizService{
   List<Quiz> quizList;

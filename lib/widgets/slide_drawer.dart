@@ -21,8 +21,8 @@ class SlideDrawer extends StatelessWidget {
                 child: Icon(LineIcons.home),
               ),
               focus: true,
-              color: greyColor,
-              backgroundColor: greyColor.withOpacity(0.03),
+              color: whiteColor,
+              backgroundColor: whiteColor.withOpacity(0.03),
               radius: const BorderRadius.only(
                 topRight: Radius.circular(20),
                 bottomRight: Radius.circular(20),
@@ -40,7 +40,7 @@ class SlideDrawer extends StatelessWidget {
                 child: Icon(LineIcons.calendar),
               ),
               focus: false,
-              color: greyColor,
+              color: whiteColor,
               // backgroundColor: greyColor.withOpacity(0.3),
               radius: const BorderRadius.only(
                 topRight: Radius.circular(20),
@@ -66,7 +66,7 @@ class SlideDrawer extends StatelessWidget {
                 child: Icon(LineIcons.archive),
               ),
               focus: false,
-              color: greyColor,
+              color: whiteColor,
               radius: const BorderRadius.only(
                 topRight: Radius.circular(20),
                 bottomRight: Radius.circular(20),
@@ -85,7 +85,7 @@ class SlideDrawer extends StatelessWidget {
                 child: Icon(LineIcons.userCog),
               ),
               focus: false,
-              color: greyColor,
+              color: whiteColor,
               radius: const BorderRadius.only(
                 topRight: Radius.circular(20),
                 bottomRight: Radius.circular(20),

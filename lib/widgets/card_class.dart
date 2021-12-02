@@ -1,9 +1,9 @@
 part of 'widgets.dart';
 
 class CardClass extends StatelessWidget {
-  Course course;
+  final Course course;
 
-  CardClass({Key? key, required this.course})
+  const CardClass({Key? key, required this.course})
       : super(key: key);
 
   @override
@@ -26,7 +26,7 @@ class CardClass extends StatelessWidget {
         ),
       ),
       child: Container(
-        height: 300,
+        height: 310,
         width: Responsive.isDesktop(context) ? 308 : 400,
         decoration: BoxDecoration(borderRadius: BorderRadius.circular(10)),
         child: Column(
@@ -41,7 +41,7 @@ class CardClass extends StatelessWidget {
                   padding: const EdgeInsets.all(20),
                   width: sizeScreen.width,
                   decoration: BoxDecoration(
-                    color: mainColor2,
+                    color: linkColor,
                     borderRadius: const BorderRadius.only(
                       topRight: Radius.circular(10),
                       topLeft: Radius.circular(10),
@@ -66,7 +66,7 @@ class CardClass extends StatelessWidget {
                             },
                             child: Icon(
                               LineIcons.verticalEllipsis,
-                              color: bgColor,
+                              color: whiteColor,
                               size: 30,
                             ),
                           ),

@@ -1,6 +1,4 @@
-//TODO: Add the form information here
-//TODO: Question title, Question choices, unique or multiple answer ?, correct answer(s)
-import 'package:elearning/models/choice.dart';
+part of 'models.dart';
 
 class Quiz {
   String question;

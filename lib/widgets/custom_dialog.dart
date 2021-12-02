@@ -15,21 +15,21 @@ class _CustomDialogState extends State<CustomDialog> {
       children: [
         Container(
           height: 200,
-          child: FlareActor(
+          child: const FlareActor(
             'assets/Success-Check.flr',
             animation: 'Untitled',
           ),
         ),
-        SizedBox(height: 10),
+        const SizedBox(height: 10),
         Text(
           '${widget.msg}',
           textAlign: TextAlign.center,
-          style: blackTextFont.copyWith(
+          style: whiteTextFont.copyWith(
             fontSize: 16,
             fontWeight: FontWeight.w400,
           ),
         ),
-        SizedBox(height: 20),
+        const SizedBox(height: 20),
       ],
     );
   }

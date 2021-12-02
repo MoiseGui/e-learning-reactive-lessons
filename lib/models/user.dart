@@ -2,18 +2,20 @@ part of 'models.dart';
 
 class User {
   String? id;
-  String? firstname;
-  String? lastname;
+  String? firstName;
+  String? lastName;
   String? username;
   String? email;
   String? password;
+  String? token;
 
   User({
     this.id,
-    this.firstname,
-    this.lastname,
+    this.firstName,
+    this.lastName,
     this.email,
     this.username,
     this.password,
+    this.token,
   });
 }

@@ -1,17 +1,4 @@
-import 'package:chewie/chewie.dart';
-import 'package:elearning/models/models.dart';
-import 'package:elearning/models/quiz.dart';
-import 'package:elearning/service/quiz_service.dart';
-import 'package:elearning/shared/theme.dart';
-import 'package:elearning/theme.dart';
-import 'package:elearning/utils/youtube_utils.dart';
-import 'package:elearning/widgets/widgets.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:material_dialogs/material_dialogs.dart';
-import 'package:material_dialogs/widgets/buttons/icon_button.dart';
-import 'package:material_dialogs/widgets/buttons/icon_outline_button.dart';
-import 'package:video_player/video_player.dart';
+part of 'pages.dart';
 
 class CourseDetail extends StatefulWidget {
   final Course course;

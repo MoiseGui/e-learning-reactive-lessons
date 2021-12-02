@@ -1,14 +1,4 @@
-// import 'dart:math';
-
-import 'package:elearning/models/models.dart';
-import 'package:elearning/shared/theme.dart';
-import 'package:elearning/widgets/widgets.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:line_icons/line_icon.dart';
-import 'package:line_icons/line_icons.dart';
-import 'package:get/route_manager.dart';
+part of './pages/pages.dart';
 
 class HomePage extends StatefulWidget {
   final String title;
@@ -24,9 +14,35 @@ class _HomePageState extends State<HomePage> {
 
   openSlideDrawer() => _scaffoldKey.currentState!.openDrawer();
 
+  var id = '';
+  var username = '';
+  var email = '';
+  String token = '';
+
+  bool isLoggedIn = false;
+
+  getDataPref() async {
+    final _sharePref = await SharedPreferences.getInstance();
+
+    id = _sharePref.getString("id")!;
+    email = _sharePref.getString("email")!;
+    username = _sharePref.getString("username")!;
+    token = _sharePref.getString("token")!;
+
+
+    if (token != null && !token.isBlank!) {
+      isLoggedIn = true;
+    }
+    else{
+      isLoggedIn = false;
+    }
+  }
+
   @override
   void initState() {
+    getDataPref();
     super.initState();
+    print("TOKEN "+token);
   }
 
   @override
@@ -53,45 +69,68 @@ class _HomePageState extends State<HomePage> {
             ),
             onTap: () {
               openSlideDrawer();
+              setState(() {
+                isLoggedIn = !isLoggedIn;
+              });
             },
           ),
         ),
         actions: [
-          GestureDetector(
-            child: MouseRegion(
-              cursor: SystemMouseCursors.click,
-              child: LineIcon(LineIcons.plus, color: Colors.white),
+          if (!isLoggedIn)
+            GestureDetector(
+              child: MouseRegion(
+                cursor: SystemMouseCursors.click,
+                child: Row(
+                  children: [
+                    LineIcon(LineIcons.userCircleAlt, color: Colors.white),
+                    if (Responsive.isDesktop(context))
+                      const Text("Me connecter"),
+                  ],
+                ),
+              ),
+              onTap: () {
+                Get.offAndToNamed("/login");
+                // Get.toNamed("/login");
+              },
             ),
-            onTap: () {
+          if (isLoggedIn)
+            GestureDetector(
+              child: MouseRegion(
+                cursor: SystemMouseCursors.click,
+                child: LineIcon(LineIcons.plus, color: Colors.white),
+              ),
+              onTap: () {
                 // Get.defaultDialog(
                 // title: '',
                 // content: const ChoiseClassOption(),
-              // );
-            },
-          ),
-          if(Responsive.isDesktop(context)) const SizedBox(width: 30),
-          if(Responsive.isDesktop(context)) Center(
-            child:
-            // Obx(
-            //                 () =>
-            Text(
-              "Hi, MoiseGui 👋",
-              style: whiteTextFont.copyWith(
-                fontSize: 18,
-                fontWeight: FontWeight.w500,
-              ),
+                // );
+              },
             ),
-            // ),
-          ),
-          const SizedBox(width: 16),
-          const CircleAvatar(
-            backgroundColor: Colors.grey,
-          ),
+          if (Responsive.isDesktop(context) && isLoggedIn)
+            const SizedBox(width: 30),
+          if (Responsive.isDesktop(context) && isLoggedIn)
+            Center(
+              child:
+                  // Obx(
+                  //                 () =>
+                  Text(
+                "Hi, MoiseGui 👋",
+                style: whiteTextFont.copyWith(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              // ),
+            ),
+          if (isLoggedIn) const SizedBox(width: 16),
+          if (isLoggedIn)
+            const CircleAvatar(
+              backgroundColor: Colors.grey,
+            ),
           const SizedBox(width: 24),
         ],
       ),
       body: Scrollbar(
-        isAlwaysShown: true,
         child: Padding(
           padding: const EdgeInsets.all(24.0),
           child: ListView(
@@ -105,8 +144,8 @@ class _HomePageState extends State<HomePage> {
                       title: "Devoirs",
                       icon: const Icon(LineIcons.clipboardList),
                       focus: false,
-                      color: secondColor,
-                      // backgroundColor: secondColor.withOpacity(0.03),
+                      color: linkColor,
+                      // backgroundColor: linkColor.withOpacity(0.03),
                       radius: BorderRadius.circular(20),
                       size: 16,
                       onPress: () {
@@ -118,8 +157,8 @@ class _HomePageState extends State<HomePage> {
                       title: "TO DO",
                       icon: const Icon(LineIcons.checkSquareAlt),
                       focus: false,
-                      color: secondColor,
-                      // backgroundColor: secondColor.withOpacity(0.03),
+                      color: linkColor,
+                      // backgroundColor: linkColor.withOpacity(0.03),
                       radius: BorderRadius.circular(20),
                       size: 16,
                       onPress: () {
@@ -131,8 +170,8 @@ class _HomePageState extends State<HomePage> {
                       title: "Calendar",
                       icon: const Icon(LineIcons.calendarCheck),
                       focus: false,
-                      color: secondColor,
-                      // backgroundColor: secondColor.withOpacity(0.03),
+                      color: linkColor,
+                      // backgroundColor: linkColor.withOpacity(0.03),
                       radius: BorderRadius.circular(20),
                       size: 16,
                       onPress: () {

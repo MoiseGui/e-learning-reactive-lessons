@@ -1,3 +1,5 @@
+part of 'models.dart';
+
 class Choice{
   int order;
   String text;

@@ -33,9 +33,9 @@ class InputField extends StatelessWidget {
         controller: userInputController,
         validator: validator,
         onSaved: savedValue,
-        cursorColor: greyColor,
+        cursorColor: whiteColor,
         obscureText: secure,
-        style: mainTextFont.copyWith(),
+        style: whiteTextFont.copyWith(),
         textInputAction: TextInputAction.next,
         decoration: InputDecoration(
           suffixIcon: suffixIcon,
@@ -61,14 +61,14 @@ class InputField extends StatelessWidget {
           enabledBorder: OutlineInputBorder(
             borderSide: BorderSide(
               width: 2,
-              color: greyColor,
+              color: whiteColor,
             ),
             borderRadius: BorderRadius.circular(16),
           ),
           focusedBorder: OutlineInputBorder(
             borderSide: BorderSide(
               width: 2,
-              color: mainColor,
+              color: successColor,
             ),
             borderRadius: BorderRadius.circular(16),
           ),
