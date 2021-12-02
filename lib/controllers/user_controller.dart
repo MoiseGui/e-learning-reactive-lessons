@@ -12,7 +12,7 @@ class UserController extends GetxController {
 
         if (response.statusCode == 200) {
           var responseUser = resBody["user"];
-          print(responseUser);
+          // print(responseUser);
 
           var username = (responseUser["username"] != null &&
                   responseUser["username"] != '')
@@ -28,7 +28,7 @@ class UserController extends GetxController {
             Get.offAndToNamed("/");
           });
         } else {
-          var message = resBody['message'];
+          var message = resBody != null ? resBody['message'] : "une erreur inantandue s'est produite. Vérifiez votre connexion.";
           Get.snackbar(
             "Connexion échouée.",
             "$message",
@@ -94,23 +94,22 @@ class UserController extends GetxController {
   }
 
   _saveData(var id, var email, var username, var token) async {
-    // try {
-    final _sharePref = await SharedPreferences.getInstance();
+    try {
+      final _sharePref = await SharedPreferences.getInstance();
 
-    // final _storage = FlutterSecureStorage();
+      // final _storage = FlutterSecureStorage();
 
-    // await _storage.write(key: 'username', value: username);
+      // await _storage.write(key: 'username', value: username);
 
-    // var user = await _storage.read(key: 'username');
-    // print(user);
+      // var user = await _storage.read(key: 'username');
+      // print(user);
 
-    _sharePref.setString('id', id);
-    _sharePref.setString('email', email);
-    _sharePref.setString('token', token);
-    _sharePref.setString('username', username);
-
-    // } catch (e) {
-    //   print("ERREUR SAVE DATA "+e.toString());
-    // }
+      _sharePref.setString('id', id);
+      _sharePref.setString('email', email);
+      _sharePref.setString('token', token);
+      _sharePref.setString('username', username);
+    } catch (e) {
+      print("ERREUR SAVE DATA " + e.toString());
+    }
   }
 }

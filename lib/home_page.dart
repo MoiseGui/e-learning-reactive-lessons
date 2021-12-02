@@ -18,26 +18,30 @@ class _HomePageState extends State<HomePage> {
   String? username = '';
   String? email = '';
   String? token = '';
+  Gravatar? _gravatar;
 
   bool isLoggedIn = false;
 
   getDataPref() async {
     final _sharePref = await SharedPreferences.getInstance();
-    id = _sharePref.getString("id");
-    email = _sharePref.getString("email");
-    username = _sharePref.getString("username");
-    token = _sharePref.getString("token");
+    setState(() {
+      id = _sharePref.getString("id");
+      email = _sharePref.getString("email");
 
-    if (token != null && !token.isBlank!) {
-      isLoggedIn = true;
-    }
-    else{
-      isLoggedIn = false;
-    }
+      if (email != null && email != "") _gravatar = Gravatar(email!);
+
+      username = _sharePref.getString("username");
+      token = _sharePref.getString("token");
+
+      if (token != null && !token.isBlank!) {
+        isLoggedIn = true;
+      } else {
+        isLoggedIn = false;
+      }
+    });
   }
 
-
-  void _logout() async {
+  void _clearStateAndStorage() async {
     final _sharePref = await SharedPreferences.getInstance();
     await _sharePref.clear();
 
@@ -50,10 +54,33 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+  Future<bool> _logout() async {
+    return (await showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Êtes vous sûr ?'),
+        content: const Text('Voulez vous vraiment vous déconnecter ?'),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: const Text('Non'),
+          ),
+          TextButton(
+            onPressed: () {
+              _clearStateAndStorage();
+              Navigator.of(context).pop(true);
+            },
+            child: const Text('Oui, Je me déconnecte'),
+          ),
+        ],
+      ),
+    )) ?? false;
+  }
+
   @override
   void initState() {
-    getDataPref();
     super.initState();
+    getDataPref();
   }
 
   @override
@@ -90,7 +117,13 @@ class _HomePageState extends State<HomePage> {
                 cursor: SystemMouseCursors.click,
                 child: Row(
                   children: [
-                    LineIcon(LineIcons.userCircleAlt, color: Colors.white),
+                    CircleAvatar(
+                      child: LineIcon(LineIcons.userCircleAlt,
+                          color: Colors.white),
+                      backgroundColor: linkColor.withOpacity(0.1),
+                    ),
+                    if (Responsive.isDesktop(context))
+                      const SizedBox(width: 10),
                     if (Responsive.isDesktop(context))
                       const Text("Me connecter"),
                   ],
@@ -133,9 +166,15 @@ class _HomePageState extends State<HomePage> {
           if (isLoggedIn) const SizedBox(width: 16),
           if (isLoggedIn)
             GestureDetector(
-              child: const MouseRegion(
+              child: MouseRegion(
                 cursor: SystemMouseCursors.click,
                 child: CircleAvatar(
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(8.0),
+                    child: Image.network(
+                      _gravatar!.imageUrl(),
+                    ),
+                  ),
                   backgroundColor: Colors.grey,
                 ),
               ),

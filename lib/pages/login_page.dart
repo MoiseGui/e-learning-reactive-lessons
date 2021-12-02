@@ -19,6 +19,18 @@ class _LoginPageState extends State<LoginPage> {
   var emailController = TextEditingController();
   var passwordController = TextEditingController();
 
+  _checkIfLoggedIn() async {
+    final _sharePref = await SharedPreferences.getInstance();
+    String? id = _sharePref.getString("id");
+    if(id != null) Navigator.of(context).pop(true);
+  }
+
+  @override
+  void initState() {
+    _checkIfLoggedIn();
+    super.initState();
+  }
+
   void onTappedSuffixIcon() {
     if (securer == true) {
       setState(() {

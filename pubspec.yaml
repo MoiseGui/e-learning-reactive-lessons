@@ -38,6 +38,7 @@ dependencies:
   http: ^0.13.2
   accordion: ^2.1.1
   shared_preferences: ^2.0.6
+  flutter_gravatar: ^2.0.2
 
 dev_dependencies:
   flutter_test:

@@ -9,6 +9,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_gravatar/flutter_gravatar.dart';
 import 'package:get/get.dart';
 import 'package:get/route_manager.dart';
 import 'package:line_icons/line_icon.dart';
@@ -36,6 +37,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:video_player/video_player.dart';
 import 'package:elearning/shared/shared.dart';
 import 'package:elearning/controllers/controllers.dart';
+import 'package:flutter_gravatar/flutter_gravatar.dart';
+import 'package:flutter_gravatar/utils.dart';
 
 part 'register_page.dart';
 part 'login_page.dart';
