@@ -185,8 +185,9 @@ class _LoginPageState extends State<LoginPage> {
                 ),
                 GestureDetector(
                   onTap: () {
-                    Get.close(0);
-                    Get.offAndToNamed("/register");
+                    // Get.close(0);
+                    // Get.offAndToNamed("/register");
+                    Get.toNamed("/register");
                   },
                   child: Text(
                     'Je m\'inscris',

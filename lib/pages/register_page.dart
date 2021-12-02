@@ -223,8 +223,9 @@ class _RegisterPageState extends State<RegisterPage> {
                 ),
                 GestureDetector(
                   onTap: () {
-                    Get.close(0);
-                    Get.offAndToNamed("/login");
+                    // Get.close(0);
+                    // Get.offAndToNamed("/login");
+                    Get.toNamed("/login");
                   },
                   child: Text(
                     "Je me connecte",

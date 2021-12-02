@@ -22,3 +22,5 @@ class DialogController {
     startTimer(goTo);
   }
 }
+
+

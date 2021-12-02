@@ -14,21 +14,19 @@ class _HomePageState extends State<HomePage> {
 
   openSlideDrawer() => _scaffoldKey.currentState!.openDrawer();
 
-  var id = '';
-  var username = '';
-  var email = '';
-  String token = '';
+  String? id = '';
+  String? username = '';
+  String? email = '';
+  String? token = '';
 
   bool isLoggedIn = false;
 
   getDataPref() async {
     final _sharePref = await SharedPreferences.getInstance();
-
-    id = _sharePref.getString("id")!;
-    email = _sharePref.getString("email")!;
-    username = _sharePref.getString("username")!;
-    token = _sharePref.getString("token")!;
-
+    id = _sharePref.getString("id");
+    email = _sharePref.getString("email");
+    username = _sharePref.getString("username");
+    token = _sharePref.getString("token");
 
     if (token != null && !token.isBlank!) {
       isLoggedIn = true;
@@ -38,11 +36,24 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+
+  void _logout() async {
+    final _sharePref = await SharedPreferences.getInstance();
+    await _sharePref.clear();
+
+    setState(() {
+      id = '';
+      username = '';
+      email = '';
+      token = '';
+      isLoggedIn = false;
+    });
+  }
+
   @override
   void initState() {
     getDataPref();
     super.initState();
-    print("TOKEN "+token);
   }
 
   @override
@@ -69,9 +80,6 @@ class _HomePageState extends State<HomePage> {
             ),
             onTap: () {
               openSlideDrawer();
-              setState(() {
-                isLoggedIn = !isLoggedIn;
-              });
             },
           ),
         ),
@@ -114,7 +122,7 @@ class _HomePageState extends State<HomePage> {
                   // Obx(
                   //                 () =>
                   Text(
-                "Hi, MoiseGui 👋",
+                "Hi, $username 👋",
                 style: whiteTextFont.copyWith(
                   fontSize: 18,
                   fontWeight: FontWeight.w500,
@@ -124,8 +132,16 @@ class _HomePageState extends State<HomePage> {
             ),
           if (isLoggedIn) const SizedBox(width: 16),
           if (isLoggedIn)
-            const CircleAvatar(
-              backgroundColor: Colors.grey,
+            GestureDetector(
+              child: const MouseRegion(
+                cursor: SystemMouseCursors.click,
+                child: CircleAvatar(
+                  backgroundColor: Colors.grey,
+                ),
+              ),
+              onTap: () {
+                _logout();
+              },
             ),
           const SizedBox(width: 24),
         ],
