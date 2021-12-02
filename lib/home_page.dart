@@ -89,8 +89,8 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
               onTap: () {
-                Get.offAndToNamed("/login");
-                // Get.toNamed("/login");
+                // Get.offAndToNamed("/login");
+                Get.toNamed("/login");
               },
             ),
           if (isLoggedIn)
