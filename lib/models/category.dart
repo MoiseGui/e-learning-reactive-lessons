@@ -15,6 +15,6 @@ class Category{
   }
 
   static Category parse(data){
-    return Category(data['_id'].toString(), data['title'].toString(), data['description']);
+    return Category(data['_id'].toString(), data['title'].toString(), data['description'] == null ? '' : data['description'].toString());
   }
 }
