@@ -124,8 +124,8 @@ class _CourseDetailState extends State<CourseDetail> {
   }
 
   _controlVideo(position) async {
-    print("Video track " + position.toString());
-    print("Quiz to redo $quizToRedoPosition");
+    // print("Video track " + position.toString());
+    // print("Quiz to redo $quizToRedoPosition");
     Quiz? quiz;
     if (quizToRedoPosition != null &&
         _quizService.compareDurations(quizToRedoPosition!, position) == 0) {

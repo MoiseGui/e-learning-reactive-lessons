@@ -11,6 +11,8 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  final _courseController = Get.put(CourseController());
+  final _categoryController = Get.put(CategoryController());
 
   openSlideDrawer() => _scaffoldKey.currentState!.openDrawer();
 
@@ -19,10 +21,15 @@ class _HomePageState extends State<HomePage> {
   String? email = '';
   String? token = '';
   Gravatar? _gravatar;
-
+  bool _loading = false;
+  bool _loadingError = false;
   bool isLoggedIn = false;
 
+  String _selectedCategoryId = '';
+
+
   getDataPref() async {
+    _initData();
     final _sharePref = await SharedPreferences.getInstance();
     setState(() {
       id = _sharePref.getString("id");
@@ -41,6 +48,26 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+  Future<void> _initData() async {
+    try {
+      setState(() {
+        _loading = true;
+      });
+      await _categoryController.loadAllCategories();
+      await _courseController.loadAllCourses();
+      setState(() {
+        _loadingError = false;
+        _loading = false;
+      });
+    } catch (e) {
+      print(e);
+      setState(() {
+        _loadingError = true;
+        _loading = false;
+      });
+    }
+  }
+
   void _clearStateAndStorage() async {
     final _sharePref = await SharedPreferences.getInstance();
     await _sharePref.clear();
@@ -56,25 +83,26 @@ class _HomePageState extends State<HomePage> {
 
   Future<bool> _logout() async {
     return (await showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Êtes vous sûr ?'),
-        content: const Text('Voulez vous vraiment vous déconnecter ?'),
-        actions: <Widget>[
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('Non'),
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Text('Êtes vous sûr ?'),
+            content: const Text('Voulez vous vraiment vous déconnecter ?'),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(false),
+                child: const Text('Non'),
+              ),
+              TextButton(
+                onPressed: () {
+                  _clearStateAndStorage();
+                  Navigator.of(context).pop(true);
+                },
+                child: const Text('Oui, Je me déconnecte'),
+              ),
+            ],
           ),
-          TextButton(
-            onPressed: () {
-              _clearStateAndStorage();
-              Navigator.of(context).pop(true);
-            },
-            child: const Text('Oui, Je me déconnecte'),
-          ),
-        ],
-      ),
-    )) ?? false;
+        )) ??
+        false;
   }
 
   @override
@@ -88,6 +116,7 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       key: _scaffoldKey,
       // backgroundColor: bgColor,
+      // drawer: const SlideDrawer(),
       appBar: AppBar(
         // backgroundColor: bgColor,
         elevation: 1,
@@ -95,21 +124,21 @@ class _HomePageState extends State<HomePage> {
           widget.title,
           style: whiteTextFont,
         ),
-        leading: Padding(
-          padding: const EdgeInsets.only(left: 20),
-          child: GestureDetector(
-            child: MouseRegion(
-              cursor: SystemMouseCursors.click,
-              child: LineIcon(
-                LineIcons.bars,
-                color: whiteTextFont.color,
-              ),
-            ),
-            onTap: () {
-              openSlideDrawer();
-            },
-          ),
-        ),
+        // leading: Padding(
+        //   padding: const EdgeInsets.only(left: 20),
+        //   child: GestureDetector(
+        //     child: MouseRegion(
+        //       cursor: SystemMouseCursors.click,
+        //       child: LineIcon(
+        //         LineIcons.bars,
+        //         color: whiteTextFont.color,
+        //       ),
+        //     ),
+        //     onTap: () {
+        //       openSlideDrawer();
+        //     },
+        //   ),
+        // ),
         actions: [
           if (!isLoggedIn)
             GestureDetector(
@@ -188,79 +217,113 @@ class _HomePageState extends State<HomePage> {
       body: Scrollbar(
         child: Padding(
           padding: const EdgeInsets.all(24.0),
-          child: ListView(
-            children: [
-              SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  children: [
-                    const SizedBox(width: 20),
-                    SecondaryButton(
-                      title: "Devoirs",
-                      icon: const Icon(LineIcons.clipboardList),
-                      focus: false,
-                      color: linkColor,
-                      // backgroundColor: linkColor.withOpacity(0.03),
-                      radius: BorderRadius.circular(20),
-                      size: 16,
-                      onPress: () {
-                        Get.to(EmptyWidget());
-                      },
-                    ),
-                    const SizedBox(width: 20),
-                    SecondaryButton(
-                      title: "TO DO",
-                      icon: const Icon(LineIcons.checkSquareAlt),
-                      focus: false,
-                      color: linkColor,
-                      // backgroundColor: linkColor.withOpacity(0.03),
-                      radius: BorderRadius.circular(20),
-                      size: 16,
-                      onPress: () {
-                        Get.to(EmptyWidget());
-                      },
-                    ),
-                    const SizedBox(width: 20),
-                    SecondaryButton(
-                      title: "Calendar",
-                      icon: const Icon(LineIcons.calendarCheck),
-                      focus: false,
-                      color: linkColor,
-                      // backgroundColor: linkColor.withOpacity(0.03),
-                      radius: BorderRadius.circular(20),
-                      size: 16,
-                      onPress: () {
-                        Get.to(EmptyWidget());
-                      },
-                    ),
-                  ],
+          child: RefreshIndicator(
+            onRefresh: _initData,
+            child: ListView(
+              children: [
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: _loading ? [] : listCategoryCard(),
+                  ),
                 ),
-              ),
-              const SizedBox(height: 20),
-              Wrap(
-                spacing: 16,
-                runSpacing: 16,
-                alignment: WrapAlignment.start,
-                children: listClassCard(),
-              ),
-            ],
+                const SizedBox(height: 20),
+                Wrap(
+                  spacing: 16,
+                  runSpacing: 16,
+                  alignment: WrapAlignment.start,
+                  children: _loading
+                      ? [
+                    const Center(
+                      child: CircularProgressIndicator(),
+                    ),
+                  ]
+                      : listCourseCard(),
+                ),
+              ],
+            ),
           ),
         ),
       ),
-      drawer: const SlideDrawer(),
     );
   }
 
-  List<Widget> listClassCard() {
+  List<Widget> listCategoryCard() {
+    List<Widget> list = [SecondaryButton(
+      title: "Tout",
+      icon: const Icon(LineIcons.clipboardList),
+      focus: false,
+      color: linkColor,
+      backgroundColor: _selectedCategoryId == '' ? linkColor.withOpacity(0.3) : linkColor.withOpacity(0),
+      radius: BorderRadius.circular(20),
+      size: 16,
+      onPress: () {
+        setState(() {
+          _selectedCategoryId = '';
+        });
+        // Get.to(EmptyWidget());
+      },
+    ),];
+
+    for (var i = 0; i < _categoryController.categories.length; i++) {
+      list.add(
+        SecondaryButton(
+          title: _categoryController.categories[i].title,
+          icon: const Icon(LineIcons.clipboardList),
+          focus: false,
+          color: linkColor,
+          backgroundColor: _selectedCategoryId.compareTo(_categoryController.categories[i].id) == 0 ? linkColor.withOpacity(0.3) : linkColor.withOpacity(0),
+          radius: BorderRadius.circular(20),
+          size: 16,
+          onPress: () {
+            setState(() {
+              _selectedCategoryId = _categoryController.categories[i].id;
+            });
+            // Get.to(EmptyWidget());
+          },
+        ),
+      );
+      // list.add(
+      //   const SizedBox(width: 20),
+      // );
+    }
+
+    return list.length > 1 ? list : [];
+  }
+
+  List<Widget> listCourseCard() {
     List<Widget> list = [];
 
-    var data = DataDummy();
+    // var data = DataDummy();
 
     CardClass card;
 
-    for (var i = 0; i < data.courses.length; i++) {
-      card = CardClass(course: data.courses[i]);
-      list.add(card);
+    for (var i = 0; i < _courseController.courses.length; i++) {
+      if(_selectedCategoryId == '' || _selectedCategoryId.compareTo(_courseController.courses[i].categoryId) == 0){
+        card = CardClass(course: _courseController.courses[i]);
+        list.add(card);
+      }
+    }
+
+    if (list.isEmpty) {
+      list = [
+        Column(
+          children: [
+            const SizedBox(height: 30),
+            const Center(
+              child: Text("Aucun cours pour le moment.", style: TextStyle(fontSize: 20),),
+            ),
+            const Center(
+              child: Text("Tirez vers le bas pour rafraichir."),
+            ),
+            const SizedBox(height: 20),
+            Image.asset(
+              "assets/illus/noData.png",
+              height: 300,
+            ),
+          ],
+        )
+      ];
     }
 
     return list;

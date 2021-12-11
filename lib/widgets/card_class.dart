@@ -11,7 +11,7 @@ class CardClass extends StatelessWidget {
     var sizeScreen = MediaQuery.of(context).size;
     String title = course.title;
     String description = course.description;
-    String username = course.username;
+    String? username = course.username;
     String? image = course.image;
 
     return Card(
@@ -38,7 +38,7 @@ class CardClass extends StatelessWidget {
                   // Get.toNamed(RouteName.classs);
                 },
                 child: Container(
-                  padding: const EdgeInsets.all(20),
+                  padding: const EdgeInsets.all(15),
                   width: sizeScreen.width,
                   decoration: BoxDecoration(
                     color: linkColor,
@@ -53,13 +53,18 @@ class CardClass extends StatelessWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(
-                            title.toString(),
-                            style: whiteTextFont.copyWith(
+                          Flexible(child: RichText(
+                            text: TextSpan(text: title.toString(),style: whiteTextFont.copyWith(
                               letterSpacing: 1,
                               fontSize: 18,
-                            ),
-                          ),
+                              height: 0.5
+                            ),),
+                            maxLines: 2,
+                            strutStyle: const StrutStyle(fontSize: 18.0),
+                            overflow: TextOverflow.ellipsis,
+                            softWrap: true,
+                          ),),
+
                           GestureDetector(
                             onTap: () {
                               // Get.toNamed(RouteName.login);
@@ -72,7 +77,8 @@ class CardClass extends StatelessWidget {
                           ),
                         ],
                       ),
-                      Text(username.toString()),
+                      const SizedBox(height: 10),
+                      Text(username == null ? '' : username.toString()),
                     ],
                   ),
                 ),

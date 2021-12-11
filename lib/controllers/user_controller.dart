@@ -4,6 +4,7 @@ class UserController extends GetxController {
   var id = ''.obs;
   var username = ''.obs;
   String? token = '';
+  User? user;
 
   userLogin(var email, var password) {
     try {
@@ -19,6 +20,7 @@ class UserController extends GetxController {
               ? responseUser["username"]
               : responseUser["firstname"] + " " + responseUser["lastname"];
 
+          user = responseUser;
           _saveData(responseUser["_id"], responseUser["email"], username,
               responseUser["token"]);
 
