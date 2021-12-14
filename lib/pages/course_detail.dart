@@ -12,7 +12,7 @@ class CourseDetail extends StatefulWidget {
 }
 
 class _CourseDetailState extends State<CourseDetail> {
-  final TargetPlatform? _platform = TargetPlatform.iOS;
+  final TargetPlatform? _platform = TargetPlatform.android;
   late VideoPlayerController _videoPlayerController;
   ChewieController? _chewieController;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -246,7 +246,6 @@ class _CourseDetailState extends State<CourseDetail> {
             }
           }
 
-          //TODO: Make the content of this form dynamic, ie bring it from the quiz object
           return AlertDialog(
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20.0)),
@@ -351,6 +350,35 @@ class _CourseDetailState extends State<CourseDetail> {
           );
   }
 
+  List<Widget> renderParagraphs(){
+    List<Widget> list = [];
+
+    for(var i = 0; i < widget.course.paragraphs.length; i++){
+      list.add(const SizedBox(height: 20));
+      list.add(Padding(
+          padding: const EdgeInsets.only(left: 10, right: 10),
+          child: Text(
+            "       ${widget.course.paragraphs[i]}",
+            style: const TextStyle(fontSize: 16),
+          ),
+        ));
+    }
+
+    if(list.isEmpty){
+      list.add(const SizedBox(height: 60));
+      list.add(const Padding(
+        padding: EdgeInsets.only(left: 15, right: 15),
+        child: Text(
+          "Ce cours ne dispose d'aucun contenu texte.",
+          textAlign: TextAlign.center,
+          style: TextStyle(fontSize: 18),
+        ),
+      ));
+    }
+
+    return list;
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -385,7 +413,7 @@ class _CourseDetailState extends State<CourseDetail> {
                           children: const [
                             CircularProgressIndicator(),
                             SizedBox(height: 20),
-                            Text('Loading'),
+                            Text('Chargement en cours...'),
                           ],
                         ),
                 ),
@@ -396,29 +424,8 @@ class _CourseDetailState extends State<CourseDetail> {
                 style:
                     const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
-              const SizedBox(height: 20),
-              const Padding(
-                padding: EdgeInsets.only(left: 10, right: 10),
-                child: Text(
-                  "       MVC est un modèle architectural composé de trois parties : modèle, vue, contrôleur . Modèle : gère la logique des données. View : Il affiche les informations du modèle à l'utilisateur. Contrôleur : il contrôle le flux de données dans un objet de modèle et met à jour la vue chaque fois que les données changent.",
-                  style: TextStyle(fontSize: 16),
-                ),
-              ),
-              const SizedBox(height: 20),
-              const Padding(
-                padding: EdgeInsets.only(left: 10, right: 10),
-                child: Text(
-                  "       Le pattern MVC permet de bien organiser son code source. Il va vous aider à savoir quels fichiers créer, mais surtout à définir leur rôle. Le but de MVC est justement de séparer la logique du code en trois parties que l'on retrouve dans des fichiers distincts.",
-                  style: TextStyle(fontSize: 16),
-                ),
-              ),
-              const SizedBox(height: 20),
-              const Padding(
-                padding: EdgeInsets.only(left: 10, right: 10),
-                child: Text(
-                  "       Modèle\n    Le composant Modèle correspond à toute la logique liée aux données avec laquelle l'utilisateur travaille. Cela peut représenter soit les données qui sont transférées entre les composants View et Controller, soit toute autre donnée liée à la logique métier. Par exemple, un objet Customer récupérera les informations client de la base de données, les manipulera et mettra à jour les données dans la base de données ou les utilisera pour restituer des données.",
-                  style: TextStyle(fontSize: 16),
-                ),
+              Column(
+                children: renderParagraphs(),
               ),
             ],
           ),

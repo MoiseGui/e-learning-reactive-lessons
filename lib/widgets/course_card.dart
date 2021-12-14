@@ -1,9 +1,9 @@
 part of 'widgets.dart';
 
-class CardClass extends StatelessWidget {
+class CourseCard extends StatelessWidget {
   final Course course;
 
-  const CardClass({Key? key, required this.course})
+  const CourseCard({Key? key, required this.course})
       : super(key: key);
 
   @override

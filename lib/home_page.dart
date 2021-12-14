@@ -13,8 +13,20 @@ class _HomePageState extends State<HomePage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final _courseController = Get.put(CourseController());
   final _categoryController = Get.put(CategoryController());
+  final _userController = Get.put(UserController());
 
   openSlideDrawer() => _scaffoldKey.currentState!.openDrawer();
+
+  // controls the text label we use as a search bar
+  final TextEditingController _filter = TextEditingController();
+
+  String _searchText = "";
+
+  List<Course> filteredCourses = []; // courses' titles filterd by search text
+
+  Icon _searchIcon = const Icon(Icons.search, color: Colors.white);
+
+  Widget? _appBarTitle;
 
   String? id = '';
   String? username = '';
@@ -27,9 +39,25 @@ class _HomePageState extends State<HomePage> {
 
   String _selectedCategoryId = '';
 
-
   getDataPref() async {
     _initData();
+    _initUserData();
+
+    _filter.addListener(() {
+      if (_filter.text.isEmpty) {
+        setState(() {
+          _searchText = "";
+          filteredCourses = _courseController.courses;
+        });
+      } else {
+        setState(() {
+          _searchText = _filter.text;
+        });
+      }
+    });
+  }
+
+  Future<void> _initUserData() async {
     final _sharePref = await SharedPreferences.getInstance();
     setState(() {
       id = _sharePref.getString("id");
@@ -56,6 +84,7 @@ class _HomePageState extends State<HomePage> {
       await _categoryController.loadAllCategories();
       await _courseController.loadAllCourses();
       setState(() {
+        filteredCourses = _courseController.courses;
         _loadingError = false;
         _loading = false;
       });
@@ -69,8 +98,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _clearStateAndStorage() async {
-    final _sharePref = await SharedPreferences.getInstance();
-    await _sharePref.clear();
+    _userController.logout();
 
     setState(() {
       id = '';
@@ -105,6 +133,55 @@ class _HomePageState extends State<HomePage> {
         false;
   }
 
+  void _searchPressed() {
+    setState(() {
+      if (_searchIcon.icon == Icons.search) {
+        _searchIcon = const Icon(Icons.close, color: Colors.white);
+        _appBarTitle = TextField(
+          controller: _filter,
+          decoration: const InputDecoration(
+              prefixIcon: Icon(Icons.search), hintText: 'Recherche...'),
+        );
+      } else {
+        _searchIcon = const Icon(Icons.search, color: Colors.white);
+        _appBarTitle = null;
+        filteredCourses = _courseController.courses;
+        _filter.clear();
+      }
+    });
+  }
+
+  Widget _buildSearchResultList() {
+    if (_searchText.isNotEmpty) {
+      List<Course> tempList = [];
+      for (int i = 0; i < filteredCourses.length; i++) {
+        if (filteredCourses[i]
+            .title
+            .toLowerCase()
+            .contains(_searchText.toLowerCase())) {
+          tempList.add(filteredCourses[i]);
+        }
+      }
+      filteredCourses = tempList;
+    }
+    return ListView.builder(
+      itemCount: filteredCourses.length,
+      itemBuilder: (BuildContext context, int index) {
+        return ListTile(
+          title: Text(filteredCourses[index].title),
+          onTap: () => {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) =>
+                      CourseDetail(course: filteredCourses[index])),
+            )
+          },
+        );
+      },
+    );
+  }
+
   @override
   void initState() {
     super.initState();
@@ -120,26 +197,33 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         // backgroundColor: bgColor,
         elevation: 1,
-        title: Text(
-          widget.title,
-          style: whiteTextFont,
-        ),
-        // leading: Padding(
-        //   padding: const EdgeInsets.only(left: 20),
-        //   child: GestureDetector(
-        //     child: MouseRegion(
-        //       cursor: SystemMouseCursors.click,
-        //       child: LineIcon(
-        //         LineIcons.bars,
-        //         color: whiteTextFont.color,
-        //       ),
-        //     ),
-        //     onTap: () {
-        //       openSlideDrawer();
-        //     },
-        //   ),
-        // ),
+        leading: null,
+        title: _appBarTitle ??
+            Text(
+              widget.title,
+              style: whiteTextFont,
+            ),
         actions: [
+          GestureDetector(
+            child: MouseRegion(
+              cursor: SystemMouseCursors.click,
+              child: Row(
+                children: [
+                  CircleAvatar(
+                    child: _searchIcon,
+                    backgroundColor: linkColor.withOpacity(0),
+                  ),
+                  if (Responsive.isDesktop(context)) const SizedBox(width: 5),
+                  if (Responsive.isDesktop(context))
+                    const Text("Rechercher un cours"),
+                  if (Responsive.isDesktop(context)) const SizedBox(width: 40,)
+                ],
+              ),
+            ),
+            onTap: () {
+              _searchPressed();
+            },
+          ),
           if (!isLoggedIn)
             GestureDetector(
               child: MouseRegion(
@@ -148,8 +232,8 @@ class _HomePageState extends State<HomePage> {
                   children: [
                     CircleAvatar(
                       child: LineIcon(LineIcons.userCircleAlt,
-                          color: Colors.white),
-                      backgroundColor: linkColor.withOpacity(0.1),
+                          color: Colors.white, size: 35),
+                      backgroundColor: linkColor.withOpacity(0.0),
                     ),
                     if (Responsive.isDesktop(context))
                       const SizedBox(width: 10),
@@ -158,9 +242,10 @@ class _HomePageState extends State<HomePage> {
                   ],
                 ),
               ),
-              onTap: () {
+              onTap: () async {
                 // Get.offAndToNamed("/login");
-                Get.toNamed("/login");
+                await Get.toNamed("/login");
+                _initUserData();
               },
             ),
           if (isLoggedIn)
@@ -214,56 +299,62 @@ class _HomePageState extends State<HomePage> {
           const SizedBox(width: 24),
         ],
       ),
-      body: Scrollbar(
-        child: Padding(
-          padding: const EdgeInsets.all(24.0),
-          child: RefreshIndicator(
-            onRefresh: _initData,
-            child: ListView(
-              children: [
-                SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    children: _loading ? [] : listCategoryCard(),
+      body: _searchIcon.icon != Icons.search
+          ? _buildSearchResultList()
+          : Scrollbar(
+              child: Padding(
+                padding: const EdgeInsets.all(24.0),
+                child: RefreshIndicator(
+                  onRefresh: _initData,
+                  child: ListView(
+                    children: [
+                      SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(
+                          children: _loading ? [] : listCategoryCard(),
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      Wrap(
+                        spacing: 16,
+                        runSpacing: 16,
+                        alignment: WrapAlignment.start,
+                        children: _loading
+                            ? [
+                                const Center(
+                                  child: CircularProgressIndicator(),
+                                ),
+                              ]
+                            : listCourseCard(),
+                      ),
+                    ],
                   ),
                 ),
-                const SizedBox(height: 20),
-                Wrap(
-                  spacing: 16,
-                  runSpacing: 16,
-                  alignment: WrapAlignment.start,
-                  children: _loading
-                      ? [
-                    const Center(
-                      child: CircularProgressIndicator(),
-                    ),
-                  ]
-                      : listCourseCard(),
-                ),
-              ],
+              ),
             ),
-          ),
-        ),
-      ),
     );
   }
 
   List<Widget> listCategoryCard() {
-    List<Widget> list = [SecondaryButton(
-      title: "Tout",
-      icon: const Icon(LineIcons.clipboardList),
-      focus: false,
-      color: linkColor,
-      backgroundColor: _selectedCategoryId == '' ? linkColor.withOpacity(0.3) : linkColor.withOpacity(0),
-      radius: BorderRadius.circular(20),
-      size: 16,
-      onPress: () {
-        setState(() {
-          _selectedCategoryId = '';
-        });
-        // Get.to(EmptyWidget());
-      },
-    ),];
+    List<Widget> list = [
+      SecondaryButton(
+        title: "Tout",
+        icon: const Icon(LineIcons.clipboardList),
+        focus: false,
+        color: linkColor,
+        backgroundColor: _selectedCategoryId == ''
+            ? linkColor.withOpacity(0.3)
+            : linkColor.withOpacity(0),
+        radius: BorderRadius.circular(20),
+        size: 16,
+        onPress: () {
+          setState(() {
+            _selectedCategoryId = '';
+          });
+          // Get.to(EmptyWidget());
+        },
+      ),
+    ];
 
     for (var i = 0; i < _categoryController.categories.length; i++) {
       list.add(
@@ -272,7 +363,11 @@ class _HomePageState extends State<HomePage> {
           icon: const Icon(LineIcons.clipboardList),
           focus: false,
           color: linkColor,
-          backgroundColor: _selectedCategoryId.compareTo(_categoryController.categories[i].id) == 0 ? linkColor.withOpacity(0.3) : linkColor.withOpacity(0),
+          backgroundColor: _selectedCategoryId
+                      .compareTo(_categoryController.categories[i].id) ==
+                  0
+              ? linkColor.withOpacity(0.3)
+              : linkColor.withOpacity(0),
           radius: BorderRadius.circular(20),
           size: 16,
           onPress: () {
@@ -296,11 +391,14 @@ class _HomePageState extends State<HomePage> {
 
     // var data = DataDummy();
 
-    CardClass card;
+    CourseCard card;
 
     for (var i = 0; i < _courseController.courses.length; i++) {
-      if(_selectedCategoryId == '' || _selectedCategoryId.compareTo(_courseController.courses[i].categoryId) == 0){
-        card = CardClass(course: _courseController.courses[i]);
+      if (_selectedCategoryId == '' ||
+          _selectedCategoryId
+                  .compareTo(_courseController.courses[i].categoryId) ==
+              0) {
+        card = CourseCard(course: _courseController.courses[i]);
         list.add(card);
       }
     }
@@ -311,7 +409,10 @@ class _HomePageState extends State<HomePage> {
           children: [
             const SizedBox(height: 30),
             const Center(
-              child: Text("Aucun cours pour le moment.", style: TextStyle(fontSize: 20),),
+              child: Text(
+                "Aucun cours pour le moment.",
+                style: TextStyle(fontSize: 20),
+              ),
             ),
             const Center(
               child: Text("Tirez vers le bas pour rafraichir."),

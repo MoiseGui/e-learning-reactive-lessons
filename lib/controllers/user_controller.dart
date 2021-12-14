@@ -20,14 +20,15 @@ class UserController extends GetxController {
               ? responseUser["username"]
               : responseUser["firstname"] + " " + responseUser["lastname"];
 
-          user = responseUser;
+          user = User(id: responseUser["_id"], firstname: responseUser["firstname"], lastname: responseUser["lastname"], email: responseUser["email"], username: responseUser["username"], token: responseUser["token"]);
           _saveData(responseUser["_id"], responseUser["email"], username,
               responseUser["token"]);
 
           DialogController()
               .successDialog("Vous vous êtes connecté avec succès", () {
             Get.close(0);
-            Get.offAndToNamed("/");
+            Get.close(0);
+            // Get.offAndToNamed("/");
           });
         } else {
           var message = resBody != null ? resBody['message'] : "une erreur inantandue s'est produite. Vérifiez votre connexion.";
@@ -69,7 +70,7 @@ class UserController extends GetxController {
             : 'Veuillez réesayer plus tard.';
         if (response.statusCode == 201) {
           DialogController().successDialog(message, () {
-            Get.toNamed("/login");
+            Get.close(0);
           });
         } else {
           Get.snackbar(
@@ -113,5 +114,15 @@ class UserController extends GetxController {
     } catch (e) {
       print("ERREUR SAVE DATA " + e.toString());
     }
+  }
+
+  logout() async{
+    final _sharePref = await SharedPreferences.getInstance();
+    await _sharePref.clear();
+
+    id = ''.obs;
+    username = ''.obs;
+    token = '';
+    user = null;
   }
 }

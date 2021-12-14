@@ -55,7 +55,7 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
   validateForm() {
-    UserController userController = Get.put(UserController());
+    UserController userController = Get.find();
     final form = _keyForm.currentState;
 
     if (form!.validate()) {
@@ -223,9 +223,9 @@ class _RegisterPageState extends State<RegisterPage> {
                 ),
                 GestureDetector(
                   onTap: () {
-                    // Get.close(0);
+                    Get.close(0);
                     // Get.offAndToNamed("/login");
-                    Get.toNamed("/login");
+                    // Get.toNamed("/login");
                   },
                   child: Text(
                     "Je me connecte",

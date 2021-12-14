@@ -12,7 +12,7 @@ import 'package:elearning/shared/shared.dart';
 // part 'responsive.dart';
 part 'custom_dialog.dart';
 part 'input_field.dart';
-part 'card_class.dart';
+part 'course_card.dart';
 part 'primary_button.dart';
 part 'secondary_button.dart';
 part 'slide_drawer.dart';

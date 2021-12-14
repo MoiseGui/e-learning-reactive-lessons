@@ -24,6 +24,12 @@ class Course {
       }
       quiz.add(Quiz(singleQuiz['question'].toString(), Duration(seconds: singleQuiz['beginTime']), Duration(seconds: singleQuiz['endTime']), singleQuiz['uniqueChoice'], choices));
     }
-    return Course(data['_id'].toString(), data['title'].toString(), data['description'].toString(), data['image'].toString(), data['username'].toString(), data['categoryId'].toString(), data['video'].toString(), [], quiz);
+    List<String> paragraphs = [];
+
+    for(var para in data["paragraphs"]){
+      paragraphs.add(para);
+    }
+
+    return Course(data['_id'].toString(), data['title'].toString(), data['description'].toString(), data['image'].toString(), data['username'].toString(), data['categoryId'].toString(), data['video'].toString(), paragraphs, quiz);
   }
 }

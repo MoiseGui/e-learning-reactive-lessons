@@ -52,7 +52,7 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void validateForm() {
-    UserController userController = Get.put(UserController());
+    UserController userController = Get.find();
     // APIService apiService = Get.put(APIService());
 
     final form = _keyForm.currentState;
