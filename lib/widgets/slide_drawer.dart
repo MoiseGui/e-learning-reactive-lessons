@@ -15,7 +15,7 @@ class SlideDrawer extends StatelessWidget {
           children: [
             const SizedBox(height: 10),
             SecondaryButton(
-              title: "Class",
+              title: "Accueil",
               icon: const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 24),
                 child: Icon(LineIcons.home),
@@ -29,15 +29,19 @@ class SlideDrawer extends StatelessWidget {
               ),
               size: 24,
               onPress: () {
-                Get.close(1);
-                // Get.toNamed(RouteName.home);
+                if(Get.currentRoute.compareTo(RouteName.home) == 0) {
+                  Get.close(1);
+                  return;
+                }
+                Get.close(2);
+                Get.toNamed(RouteName.home);
               },
             ),
             SecondaryButton(
-              title: "Calendar",
+              title: "Tableau de bord",
               icon: const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 24),
-                child: Icon(LineIcons.calendar),
+                child: Icon(LineIcons.archive),
               ),
               focus: false,
               color: whiteColor,
@@ -49,8 +53,12 @@ class SlideDrawer extends StatelessWidget {
               size: 24,
 
               onPress: () {
-                Get.close(1);
-                Get.to(EmptyWidget());
+                if(Get.currentRoute.compareTo(RouteName.dashboard) == 0) {
+                  Get.close(1);
+                  return;
+                }
+                Get.close(2);
+                Get.toNamed(RouteName.dashboard);
               },
             ),
             // class mengajar
@@ -60,10 +68,10 @@ class SlideDrawer extends StatelessWidget {
             registeredClass(),
 
             SecondaryButton(
-              title: "Archived Class",
+              title: "Mes cours",
               icon: const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 24),
-                child: Icon(LineIcons.archive),
+                child: Icon(LineIcons.list),
               ),
               focus: false,
               color: whiteColor,
@@ -78,24 +86,24 @@ class SlideDrawer extends StatelessWidget {
                 Get.to(EmptyWidget());
               },
             ),
-            SecondaryButton(
-              title: "Setting",
-              icon: const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 24),
-                child: Icon(LineIcons.userCog),
-              ),
-              focus: false,
-              color: whiteColor,
-              radius: const BorderRadius.only(
-                topRight: Radius.circular(20),
-                bottomRight: Radius.circular(20),
-              ),
-              size: 24,
-              onPress: () {
-                Get.close(1);
-                Get.to(EmptyWidget());
-              },
-            ),
+            // SecondaryButton(
+            //   title: "Setting",
+            //   icon: const Padding(
+            //     padding: EdgeInsets.symmetric(horizontal: 24),
+            //     child: Icon(LineIcons.userCog),
+            //   ),
+            //   focus: false,
+            //   color: whiteColor,
+            //   radius: const BorderRadius.only(
+            //     topRight: Radius.circular(20),
+            //     bottomRight: Radius.circular(20),
+            //   ),
+            //   size: 24,
+            //   onPress: () {
+            //     Get.close(1);
+            //     Get.to(EmptyWidget());
+            //   },
+            // ),
           ],
         ),
       ),

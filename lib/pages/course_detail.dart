@@ -12,7 +12,8 @@ class CourseDetail extends StatefulWidget {
 }
 
 class _CourseDetailState extends State<CourseDetail> {
-  final TargetPlatform? _platform = TargetPlatform.android;
+  // final TargetPlatform? _platform = TargetPlatform.android;
+  final TargetPlatform? _platform = TargetPlatform.iOS;
   late VideoPlayerController _videoPlayerController;
   ChewieController? _chewieController;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -38,9 +39,10 @@ class _CourseDetailState extends State<CourseDetail> {
   Future<void> initializePlayer() async {
     // Youtube video converter has a problem on web version: To fix later
     var dataSource = await YoutubeUtils.extractVideoUrl(widget.course.video);
-    if (dataSource == null || dataSource == '')
+    if (dataSource == '') {
       dataSource =
           "https://assets.mixkit.co/videos/preview/mixkit-daytime-city-traffic-aerial-view-56-large.mp4";
+    }
     _videoPlayerController = VideoPlayerController.network(dataSource);
     await Future.wait([
       _videoPlayerController.initialize(),

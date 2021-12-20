@@ -4,6 +4,7 @@ abstract class RouteName {
   static const home = "/";
   static const login = "/login";
   static const register = "/register";
+  static const dashboard = "/dashboard";
 }
 
 class RoutePage {
@@ -19,6 +20,10 @@ class RoutePage {
     GetPage(
       name: RouteName.register,
       page: () => RegisterPage(),
+    ),
+    GetPage(
+        name: RouteName.dashboard,
+        page: () => const Dashboard()
     ),
   ];
 }

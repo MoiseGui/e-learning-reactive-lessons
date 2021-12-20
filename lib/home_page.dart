@@ -193,11 +193,25 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       key: _scaffoldKey,
       // backgroundColor: bgColor,
-      // drawer: const SlideDrawer(),
+      drawer: isLoggedIn ? const SlideDrawer() : null,
       appBar: AppBar(
         // backgroundColor: bgColor,
         elevation: 1,
-        leading: null,
+        leading: isLoggedIn ? Padding(
+          padding: const EdgeInsets.only(left: 20),
+          child: GestureDetector(
+            child: MouseRegion(
+              cursor: SystemMouseCursors.click,
+              child: LineIcon(
+                LineIcons.bars,
+                color: whiteTextFont.color,
+              ),
+            ),
+            onTap: () {
+              openSlideDrawer();
+            },
+          ),
+        ) : null,
         title: _appBarTitle ??
             Text(
               widget.title,
@@ -303,11 +317,12 @@ class _HomePageState extends State<HomePage> {
           ? _buildSearchResultList()
           : Scrollbar(
               child: Padding(
-                padding: const EdgeInsets.all(24.0),
+                padding: const EdgeInsets.only(left: 24.0, right: 24.0),
                 child: RefreshIndicator(
                   onRefresh: _initData,
                   child: ListView(
                     children: [
+                      const SizedBox(height: 20),
                       SingleChildScrollView(
                         scrollDirection: Axis.horizontal,
                         child: Row(
