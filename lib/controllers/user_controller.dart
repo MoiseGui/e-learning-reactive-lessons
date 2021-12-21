@@ -4,7 +4,7 @@ class UserController extends GetxController {
   var id = ''.obs;
   var username = ''.obs;
   String? token = '';
-  User? user;
+  var user;
 
   userLogin(var email, var password) {
     try {
@@ -15,23 +15,30 @@ class UserController extends GetxController {
           var responseUser = resBody["user"];
           // print(responseUser);
 
-          var username = (responseUser["username"] != null &&
-                  responseUser["username"] != '')
-              ? responseUser["username"]
-              : responseUser["firstname"] + " " + responseUser["lastname"];
+          user = User.parse(responseUser);
 
-          user = User(id: responseUser["_id"], firstname: responseUser["firstname"], lastname: responseUser["lastname"], email: responseUser["email"], username: responseUser["username"], token: responseUser["token"]);
-          _saveData(responseUser["_id"], responseUser["email"], username,
-              responseUser["token"]);
+          if (user != null) _saveData(user);
 
           DialogController()
               .successDialog("Vous vous êtes connecté avec succès", () {
             Get.close(0);
-            Get.close(0);
-            // Get.offAndToNamed("/");
+            if(user.id != null && user.roles != null) {
+              print("User is Logged In");
+              if(User.isEtudiant( user.roles)) {
+                print("As a Student");
+                Get.offNamed(RouteName.home);
+                // Get.toNamed(RouteName.home);
+              } else if(User.isProfesseur( user.roles)) {
+                print("As a Prof");
+                // Get.toNamed(RouteName.dashboard);
+                Get.offNamed(RouteName.dashboard);
+              }
+            }
           });
         } else {
-          var message = resBody != null ? resBody['message'] : "une erreur inantandue s'est produite. Vérifiez votre connexion.";
+          var message = resBody != null
+              ? resBody['message']
+              : "une erreur inantandue s'est produite. Vérifiez votre connexion.";
           Get.snackbar(
             "Connexion échouée.",
             "$message",
@@ -64,7 +71,6 @@ class UserController extends GetxController {
               firstname: firstname,
               lastname: lastname)
           .then((response) {
-        print(response.body);
         var message = response.body != null
             ? response.body['message'] ?? 'Veuillez réesayer plus tard.'
             : 'Veuillez réesayer plus tard.';
@@ -96,27 +102,23 @@ class UserController extends GetxController {
     }
   }
 
-  _saveData(var id, var email, var username, var token) async {
+  _saveData(User user) async {
+    print("SAVE_USER");
     try {
       final _sharePref = await SharedPreferences.getInstance();
 
-      // final _storage = FlutterSecureStorage();
-
-      // await _storage.write(key: 'username', value: username);
-
-      // var user = await _storage.read(key: 'username');
-      // print(user);
-
-      _sharePref.setString('id', id);
-      _sharePref.setString('email', email);
-      _sharePref.setString('token', token);
-      _sharePref.setString('username', username);
+      // _sharePref.setString('id', user.id);
+      // _sharePref.setString('email', user.email);
+      // _sharePref.setString('token', user.token);
+      // _sharePref.setString('username', user.username);
+      // _sharePref.setStringList('roles', user.roles);
+      _sharePref.setString('user', jsonEncode(user.toJson()));
     } catch (e) {
-      print("ERREUR SAVE DATA " + e.toString());
+      print("ERREUR IN SAVE_DATA " + e.toString());
     }
   }
 
-  logout() async{
+  logout() async {
     final _sharePref = await SharedPreferences.getInstance();
     await _sharePref.clear();
 

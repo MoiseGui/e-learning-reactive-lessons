@@ -14,29 +14,27 @@ class _DashboardState extends State<Dashboard> {
 
   openSlideDrawer() => _scaffoldKey.currentState!.openDrawer();
 
-  String? id = '';
-  String? username = '';
-  String? email = '';
-  String? token = '';
+  // String? id = '';
+  // String? username = '';
+  // String? email = '';
+  // String? token = '';
   Gravatar? _gravatar;
   bool _loading = false;
+  var user;
 
   Future<void> _initUserData() async {
     _loading = true;
-    final _sharePref = await SharedPreferences.getInstance();
+    user = await AuthService().checkAuth(miniMumRole: ROLE_PROFESSEUR);
     setState(() {
-      id = _sharePref.getString("id");
-      email = _sharePref.getString("email");
-
-      if (email != null && email != "") _gravatar = Gravatar(email!);
-
-      username = _sharePref.getString("username");
-      token = _sharePref.getString("token");
-
-      if (token == null || token.isBlank!) {
-        Get.close(1);
-        Get.toNamed(RouteName.home);
+      if (user == null) {
+        print("User not connected");
+        Get.offNamed(RouteName.loginPage);
       }
+
+      if (user.email != null && user.email != "") {
+        _gravatar = Gravatar(user.email);
+      }
+
       _loading = false;
     });
   }
@@ -118,7 +116,7 @@ class _DashboardState extends State<Dashboard> {
                   // Obx(
                   //                 () =>
                   Text(
-                "Hi, $username 👋",
+                "Hi, ${user.username} 👋",
                 style: whiteTextFont.copyWith(
                   fontSize: 18,
                   fontWeight: FontWeight.w500,
@@ -133,9 +131,11 @@ class _DashboardState extends State<Dashboard> {
               child: CircleAvatar(
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(8.0),
-                  child: !_loading ? Image.network(
-                    _gravatar!.imageUrl(),
-                  ) : null,
+                  child: !_loading
+                      ? Image.network(
+                          _gravatar!.imageUrl(),
+                        )
+                      : null,
                 ),
                 backgroundColor: Colors.grey,
               ),
@@ -166,10 +166,26 @@ class _DashboardState extends State<Dashboard> {
                       runSpacing: 10,
                       alignment: WrapAlignment.start,
                       children: const [
-                        QuickLinkWidget(icon: LineIcons.school, value: "204", text: "Cours",),
-                        QuickLinkWidget(icon: LineIcons.youtube, value: "20103", text: "Vues",),
-                        QuickLinkWidget(icon: LineIcons.flask, value: "387", text: "Quiz",),
-                        QuickLinkWidget(icon: LineIcons.chalkboard, value: "87%", text: "Réussite",),
+                        QuickLinkWidget(
+                          icon: LineIcons.school,
+                          value: "204",
+                          text: "Cours",
+                        ),
+                        QuickLinkWidget(
+                          icon: LineIcons.youtube,
+                          value: "20103",
+                          text: "Vues",
+                        ),
+                        QuickLinkWidget(
+                          icon: LineIcons.flask,
+                          value: "387",
+                          text: "Quiz",
+                        ),
+                        QuickLinkWidget(
+                          icon: LineIcons.chalkboard,
+                          value: "87%",
+                          text: "Réussite",
+                        ),
                       ],
                     ),
                   ],

@@ -67,7 +67,7 @@ class CourseCard extends StatelessWidget {
 
                           GestureDetector(
                             onTap: () {
-                              // Get.toNamed(RouteName.login);
+                              // Get.toNamed(RouteName.loginPage);
                             },
                             child: Icon(
                               LineIcons.verticalEllipsis,

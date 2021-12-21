@@ -1,25 +1,30 @@
 part of 'routes.dart';
 
 abstract class RouteName {
-  static const home = "/";
-  static const login = "/login";
+  static const login = "/";
+  static const loginPage = "/login";
   static const register = "/register";
+  static const home = "/home";
   static const dashboard = "/dashboard";
 }
 
 class RoutePage {
   static final pages = [
     GetPage(
-      name: RouteName.home,
-      page: () => const HomePage(title: 'E-learning'),
+      name: RouteName.login,
+      page: () => LoginPage(load: true),
     ),
     GetPage(
-      name: RouteName.login,
-      page: () => const LoginPage(),
+      name: RouteName.loginPage,
+      page: () => LoginPage(load: false),
     ),
     GetPage(
       name: RouteName.register,
       page: () => RegisterPage(),
+    ),
+    GetPage(
+      name: RouteName.home,
+      page: () => const HomePage(),
     ),
     GetPage(
         name: RouteName.dashboard,

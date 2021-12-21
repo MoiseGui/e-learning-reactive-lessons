@@ -2,6 +2,7 @@ part of 'models.dart';
 
 class Course {
   String _id;
+  BigInt numViews;
   String title;
   String description;
   String? image;
@@ -11,7 +12,7 @@ class Course {
   List<String> paragraphs;
   List<Quiz> quiz;
 
-  Course(this._id, this.title, this.description, this.image, this.username, this.categoryId, this.video, this.paragraphs, this.quiz);
+  Course(this._id, this.numViews, this.title, this.description, this.image, this.username, this.categoryId, this.video, this.paragraphs, this.quiz);
 
   static Course parse(data){
     var allQuiz = data['quiz'];
@@ -22,7 +23,14 @@ class Course {
       for(var choice in choiceList){
         choices.add(Choice(choice['text'], choice['correct'], choice['order']));
       }
-      quiz.add(Quiz(singleQuiz['question'].toString(), Duration(seconds: singleQuiz['beginTime']), Duration(seconds: singleQuiz['endTime']), singleQuiz['uniqueChoice'], choices));
+
+      var responseList = singleQuiz['responses'];
+      List<Reponse> responses = [];
+      for(var resp in responseList){
+        responses.add(Reponse(resp['name'], resp['correct']));
+      }
+
+      quiz.add(Quiz(singleQuiz['question'].toString(), Duration(seconds: singleQuiz['beginTime']), Duration(seconds: singleQuiz['endTime']), singleQuiz['uniqueChoice'], choices, responses));
     }
     List<String> paragraphs = [];
 
@@ -30,6 +38,6 @@ class Course {
       paragraphs.add(para);
     }
 
-    return Course(data['_id'].toString(), data['title'].toString(), data['description'].toString(), data['image'].toString(), data['username'].toString(), data['categoryId'].toString(), data['video'].toString(), paragraphs, quiz);
+    return Course(data['_id'].toString(), BigInt.from(data['numViews']), data['title'].toString(), data['description'].toString(), data['image'].toString(), data['username'].toString(), data['categoryId'].toString(), data['video'].toString(), paragraphs, quiz);
   }
 }

@@ -1,7 +1,8 @@
 part of 'pages.dart';
 
 class LoginPage extends StatefulWidget {
-  const LoginPage({Key? key}) : super(key: key);
+  late bool load;
+  LoginPage({Key? key, required this.load}) : super(key: key);
 
   @override
   _LoginPageState createState() => _LoginPageState();
@@ -10,8 +11,15 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final _keyForm = GlobalKey<FormState>();
 
+  final _courseController = Get.put(CourseController());
+  final _categoryController = Get.put(CategoryController());
+  final _userController = Get.put(UserController());
+
+  bool _loading = true;
+
   String? emailInput;
   String? passwordInput;
+  var user;
 
   bool securer = true;
   Icon iconSecure = Icon(LineIcons.eye, color: whiteColor);
@@ -20,9 +28,26 @@ class _LoginPageState extends State<LoginPage> {
   var passwordController = TextEditingController();
 
   _checkIfLoggedIn() async {
-    final _sharePref = await SharedPreferences.getInstance();
-    String? id = _sharePref.getString("id");
-    if(id != null) Navigator.of(context).pop(true);
+    setState(() {
+      _loading = widget.load;
+    });
+    user = await AuthService().checkAuth(redirect: false);
+    Future.delayed(const Duration(seconds: 2), () {
+      setState(() {
+        if (user != null) {
+          print("User is Logged In");
+          if (User.isEtudiant(user.roles)) {
+            Get.close(0);
+            Get.toNamed(RouteName.home);
+          } else if (User.isProfesseur(user.roles)) {
+            Get.close(0);
+            Get.toNamed(RouteName.dashboard);
+          }
+        } else {
+          _loading = false;
+        }
+      });
+    });
   }
 
   @override
@@ -52,7 +77,7 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void validateForm() {
-    UserController userController = Get.find();
+    // UserController userController = Get.find();
     // APIService apiService = Get.put(APIService());
 
     final form = _keyForm.currentState;
@@ -60,7 +85,7 @@ class _LoginPageState extends State<LoginPage> {
     if (form!.validate()) {
       form.save();
 
-      userController.userLogin(emailInput, passwordInput);
+      _userController.userLogin(emailInput, passwordInput);
       // apiService.login(email: emailInput, password: passwordInput);
     }
   }
@@ -69,10 +94,36 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       // backgroundColor: bgColor,
-      body: Responsive(
-        desktop: desktop(),
-        mobile: mobile(),
-      ),
+      body: _loading
+          ? loagingPage()
+          : Responsive(
+              desktop: desktop(),
+              mobile: mobile(),
+            ),
+    );
+  }
+
+  Widget loagingPage() {
+    var sizeScreen = MediaQuery.of(context).size;
+    return
+      SafeArea(
+        child: SizedBox(
+          width: sizeScreen.width,
+          height: sizeScreen.height,
+          child: Padding(
+            padding: const EdgeInsets.only(top: 100),
+            child: Column(
+              children: [
+                Image.asset(
+                  "assets/illus/Education-Illustration-Kit-02.png",
+                ),
+                Text("Bienvenue sur E-leaning", style: whiteTextFont.copyWith(fontSize: 22)),
+                const SizedBox(height: 20),
+                const CircularProgressIndicator(),
+              ],
+            ),
+          ),
+        )
     );
   }
 

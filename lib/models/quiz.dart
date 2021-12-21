@@ -6,12 +6,13 @@ class Quiz {
   Duration endTime;
   bool uniqueChoice;
   List<Choice> choices;
+  List<Reponse> responses;
 
   bool? shown = false;
   bool? passed = false;
 
 
-  Quiz(this.question, this.beginTime, this.endTime, this.uniqueChoice, this.choices);
+  Quiz(this.question, this.beginTime, this.endTime, this.uniqueChoice, this.choices, this.responses);
 
   bool? isShown(){
     return shown;

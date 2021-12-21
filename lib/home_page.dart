@@ -1,9 +1,7 @@
 part of './pages/pages.dart';
 
 class HomePage extends StatefulWidget {
-  final String title;
-
-  const HomePage({Key? key, required this.title}) : super(key: key);
+  const HomePage({Key? key}) : super(key: key);
 
   @override
   _HomePageState createState() => _HomePageState();
@@ -11,9 +9,13 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  final _courseController = Get.put(CourseController());
-  final _categoryController = Get.put(CategoryController());
-  final _userController = Get.put(UserController());
+
+  // final _courseController = Get.put(CourseController());
+  // final _categoryController = Get.put(CategoryController());
+  // final _userController = Get.put(UserController());
+  final CourseController _courseController = Get.find();
+  final CategoryController _categoryController = Get.find();
+  final UserController _userController = Get.find();
 
   openSlideDrawer() => _scaffoldKey.currentState!.openDrawer();
 
@@ -28,20 +30,17 @@ class _HomePageState extends State<HomePage> {
 
   Widget? _appBarTitle;
 
-  String? id = '';
-  String? username = '';
-  String? email = '';
-  String? token = '';
   Gravatar? _gravatar;
   bool _loading = false;
   bool _loadingError = false;
   bool isLoggedIn = false;
+  var user;
 
   String _selectedCategoryId = '';
 
   getDataPref() async {
-    _initData();
     _initUserData();
+    _initData();
 
     _filter.addListener(() {
       if (_filter.text.isEmpty) {
@@ -58,20 +57,17 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> _initUserData() async {
-    final _sharePref = await SharedPreferences.getInstance();
+    user = await AuthService().checkAuth();
     setState(() {
-      id = _sharePref.getString("id");
-      email = _sharePref.getString("email");
-
-      if (email != null && email != "") _gravatar = Gravatar(email!);
-
-      username = _sharePref.getString("username");
-      token = _sharePref.getString("token");
-
-      if (token != null && !token.isBlank!) {
+      if (user != null) {
         isLoggedIn = true;
       } else {
-        isLoggedIn = false;
+        print("User not connected");
+        Get.offNamed(RouteName.loginPage);
+      }
+
+      if (user.email != null && user.email != "") {
+        _gravatar = Gravatar(user.email);
       }
     });
   }
@@ -101,10 +97,7 @@ class _HomePageState extends State<HomePage> {
     _userController.logout();
 
     setState(() {
-      id = '';
-      username = '';
-      email = '';
-      token = '';
+      user = null;
       isLoggedIn = false;
     });
   }
@@ -123,7 +116,8 @@ class _HomePageState extends State<HomePage> {
               TextButton(
                 onPressed: () {
                   _clearStateAndStorage();
-                  Navigator.of(context).pop(true);
+                  Get.close(0);
+                  Get.offNamed(RouteName.loginPage);
                 },
                 child: const Text('Oui, Je me déconnecte'),
               ),
@@ -193,28 +187,32 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       key: _scaffoldKey,
       // backgroundColor: bgColor,
-      drawer: isLoggedIn ? const SlideDrawer() : null,
+      drawer: isLoggedIn && !User.isEtudiant(user.roles)
+          ? const SlideDrawer()
+          : null,
       appBar: AppBar(
         // backgroundColor: bgColor,
         elevation: 1,
-        leading: isLoggedIn ? Padding(
-          padding: const EdgeInsets.only(left: 20),
-          child: GestureDetector(
-            child: MouseRegion(
-              cursor: SystemMouseCursors.click,
-              child: LineIcon(
-                LineIcons.bars,
-                color: whiteTextFont.color,
-              ),
-            ),
-            onTap: () {
-              openSlideDrawer();
-            },
-          ),
-        ) : null,
+        leading: isLoggedIn && !User.isEtudiant(user.roles)
+            ? Padding(
+                padding: const EdgeInsets.only(left: 20),
+                child: GestureDetector(
+                  child: MouseRegion(
+                    cursor: SystemMouseCursors.click,
+                    child: LineIcon(
+                      LineIcons.bars,
+                      color: whiteTextFont.color,
+                    ),
+                  ),
+                  onTap: () {
+                    openSlideDrawer();
+                  },
+                ),
+              )
+            : null,
         title: _appBarTitle ??
             Text(
-              widget.title,
+              "E-learning",
               style: whiteTextFont,
             ),
         actions: [
@@ -230,7 +228,10 @@ class _HomePageState extends State<HomePage> {
                   if (Responsive.isDesktop(context)) const SizedBox(width: 5),
                   if (Responsive.isDesktop(context))
                     const Text("Rechercher un cours"),
-                  if (Responsive.isDesktop(context)) const SizedBox(width: 40,)
+                  if (Responsive.isDesktop(context))
+                    const SizedBox(
+                      width: 40,
+                    )
                 ],
               ),
             ),
@@ -262,7 +263,7 @@ class _HomePageState extends State<HomePage> {
                 _initUserData();
               },
             ),
-          if (isLoggedIn)
+          if (isLoggedIn && !User.isEtudiant(user.roles))
             GestureDetector(
               child: MouseRegion(
                 cursor: SystemMouseCursors.click,
@@ -283,7 +284,7 @@ class _HomePageState extends State<HomePage> {
                   // Obx(
                   //                 () =>
                   Text(
-                "Hi, $username 👋",
+                "Hi, ${user.username} 👋",
                 style: whiteTextFont.copyWith(
                   fontSize: 18,
                   fontWeight: FontWeight.w500,

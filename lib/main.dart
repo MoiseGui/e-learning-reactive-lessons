@@ -21,8 +21,8 @@ class MyApp extends StatelessWidget {
       theme: AppTheme.dark.copyWith(
         platform: Theme.of(context).platform,
       ),
-      initialRoute: RouteName.home,
-      home: const HomePage(title: 'E-learning'),
+      initialRoute: RouteName.login,
+      home: LoginPage(load: true),
       getPages: RoutePage.pages,
     );
   }

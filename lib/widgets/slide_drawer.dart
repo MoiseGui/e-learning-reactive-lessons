@@ -22,7 +22,7 @@ class SlideDrawer extends StatelessWidget {
               ),
               focus: true,
               color: whiteColor,
-              backgroundColor: whiteColor.withOpacity(0.03),
+              // backgroundColor: whiteColor.withOpacity(0.03),
               radius: const BorderRadius.only(
                 topRight: Radius.circular(20),
                 bottomRight: Radius.circular(20),
