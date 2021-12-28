@@ -66,4 +66,35 @@ class CourseController extends GetxController {
     // print('fetched');
   }
 
+  Future courseRespond(String id, Duration beginTime, bool correct) async{
+    if(user != null){
+      // print("here to fetch");
+      // final response = await _dio.get('/');
+      Map<String, String> headers = {
+        'Accept': 'application/json',
+        'Authorization': 'Bearer ${user.token}',
+      };
+      var response = Reponse.all(user.firstname + " " + user.lastname, correct, beginTime.inSeconds);
+
+      var uri = Uri.parse(apiHost + courseRespondPath + '/?id=$id');
+
+      var body = {
+        "name": user.firstname + " " + user.lastname,
+        "correct": correct.toString(),
+        "beginTime": beginTime.inSeconds.toString()
+      };
+
+      final result = await put(uri, headers: headers, body: body);
+      final resultJson = jsonDecode(result.body);
+
+
+      if (resultJson != null && resultJson["course"] != null) {
+        // print('hey result');
+        Course updatedCourse = Course.parse(resultJson["course"]);
+        courses = courses.map((c) => c.id.compareTo(updatedCourse.id) == 0 ? updatedCourse : c).toList();
+      }
+
+    }
+  }
+
 }

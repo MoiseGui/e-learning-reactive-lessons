@@ -9,6 +9,7 @@ class Dashboard extends StatefulWidget {
 
 class _DashboardState extends State<Dashboard> {
   final _userController = Get.put(UserController());
+  final _courseController = Get.put(CourseController());
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -21,16 +22,14 @@ class _DashboardState extends State<Dashboard> {
   Gravatar? _gravatar;
   bool _loading = false;
   var user;
+  List<Course> myCourses = [];
 
   Future<void> _initUserData() async {
-    _loading = true;
+    setState(() {
+      _loading = true;
+    });
     user = await AuthService().checkAuth(miniMumRole: ROLE_PROFESSEUR);
     setState(() {
-      if (user == null) {
-        print("User not connected");
-        Get.offNamed(RouteName.loginPage);
-      }
-
       if (user.email != null && user.email != "") {
         _gravatar = Gravatar(user.email);
       }
@@ -39,9 +38,65 @@ class _DashboardState extends State<Dashboard> {
     });
   }
 
+  Future<void> _initData() async {
+    setState(() {
+      _loading = true;
+    });
+
+    await _courseController.loadAllCourses();
+    setState(() {
+      myCourses = _courseController.myCourses;
+      _loading = false;
+    });
+  }
+
+  BigInt countViews(List<Course> courses) {
+    BigInt views = BigInt.zero;
+    courses.forEach((c) {
+      views += c.numViews;
+    });
+
+    return views;
+  }
+
+  int countQuizzes(List<Course>  courses) {
+    int nbrQuizzes = 0;
+    courses.forEach((c) {
+      nbrQuizzes += c.quiz.length;
+    });
+
+    return nbrQuizzes;
+  }
+
+  String successRate(List<Course> courses) {
+    String rate = "";
+    int nbrGood = 0;
+    int nbrWrong = 0;
+    courses.forEach((c) {
+      c.quiz.forEach((q) {
+        q.responses.forEach((resp) {
+          if (resp.correct)
+            nbrGood++;
+          else
+            nbrWrong++;
+        });
+      });
+    });
+
+    if (nbrWrong + nbrGood == 0)
+      rate = "N/A";
+    else {
+      var percent = BigInt.from((nbrGood / (nbrWrong + nbrGood)) * 100);
+      rate = percent.toString() + "%";
+    }
+
+    return rate;
+  }
+
   @override
   void initState() {
     _initUserData();
+    _initData();
   }
 
   Future<bool> _logout() async {
@@ -165,25 +220,25 @@ class _DashboardState extends State<Dashboard> {
                       spacing: 10,
                       runSpacing: 10,
                       alignment: WrapAlignment.start,
-                      children: const [
+                      children: [
                         QuickLinkWidget(
                           icon: LineIcons.school,
-                          value: "204",
+                          value: myCourses.length.toString(),
                           text: "Cours",
                         ),
                         QuickLinkWidget(
                           icon: LineIcons.youtube,
-                          value: "20103",
+                          value: countViews(myCourses).toString(),
                           text: "Vues",
                         ),
                         QuickLinkWidget(
                           icon: LineIcons.flask,
-                          value: "387",
+                          value: countQuizzes(myCourses).toString(),
                           text: "Quiz",
                         ),
                         QuickLinkWidget(
                           icon: LineIcons.chalkboard,
-                          value: "87%",
+                          value: successRate(myCourses),
                           text: "Réussite",
                         ),
                       ],
