@@ -211,7 +211,12 @@ class _CoursesPageState extends State<CoursesPage> {
 
     if (courses != null) {
       for (var i = 0; i < courses.length; i++) {
-        card = CourseCell(course: courses[i]);
+        card = CourseCell(
+            course: courses[i],
+            onTap: () async {
+              await _showDialog(context, courses[i]);
+              _initData();
+            });
         list.add(card);
       }
     }
@@ -241,5 +246,126 @@ class _CoursesPageState extends State<CoursesPage> {
     }
 
     return list;
+  }
+
+  String successRate(Course course) {
+    String rate = "";
+    int nbrGood = 0;
+    int nbrWrong = 0;
+
+    course.quiz.forEach((q) {
+      q.responses.forEach((resp) {
+        if (resp.correct) {
+          nbrGood++;
+        } else {
+          nbrWrong++;
+        }
+      });
+    });
+
+    if (nbrWrong + nbrGood == 0) {
+      rate = "N/A";
+    } else {
+      var percent = BigInt.from((nbrGood / (nbrWrong + nbrGood)) * 100);
+      rate = percent.toString() + "%";
+    }
+
+    return rate;
+  }
+
+  _showDialog(context, Course course) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20.0)),
+            content: Container(
+              height: 500,
+              child: Stack(
+                children: [
+                  Positioned(
+                    right: 0,
+                    top: 0,
+                    width: 30,
+                    child: InkResponse(
+                      onTap: () {
+                        print("HEYYYY");
+                        Get.close(0);
+                      },
+                      child: const CircleAvatar(
+                        child: Icon(Icons.close),
+                        backgroundColor: Colors.red,
+                      ),
+                    ),
+                  ),
+                  ListView(
+                    children: [
+                      Text(
+                        course.title,
+                        style: const TextStyle(
+                            fontSize: 17, fontWeight: FontWeight.w400),
+                      ),
+                      const SizedBox(height: 15),
+                      const Divider(
+                        height: 20.0,
+                        color: Colors.grey,
+                      ),
+                      Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Wrap(
+                            spacing: 5,
+                            runSpacing: 5,
+                            alignment: WrapAlignment.start,
+                            children: [
+                              SingleCourseStatWidget(
+                                icon: LineIcons.youtube,
+                                value: course.numViews.toString(),
+                                text: "Vues",
+                              ),
+                              SingleCourseStatWidget(
+                                icon: LineIcons.flask,
+                                value: course.quiz.length.toString(),
+                                text: "Quiz",
+                              ),
+                              SingleCourseStatWidget(
+                                icon: LineIcons.chalkboard,
+                                value: successRate(course),
+                                text: "Réussite",
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 40),
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                            textStyle: const TextStyle(fontSize: 20),
+                            fixedSize: Responsive.isDesktop(context)
+                                ? const Size.fromWidth(308)
+                                : const Size.fromWidth(400),
+                            primary: linkColor,
+                            shape: const RoundedRectangleBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10)))),
+                        child: const Text("Modifier ce cours"),
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    CourseDetail(course: course)),
+                          );
+                          // Get.to(CourseDetail(title: title.toString()));
+                        },
+                      )
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          );
+        });
   }
 }

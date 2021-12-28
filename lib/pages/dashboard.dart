@@ -237,6 +237,13 @@ class _DashboardState extends State<Dashboard> {
                                 icon: LineIcons.school,
                                 value: myCourses.length.toString(),
                                 text: "Cours",
+                                onTap: (){
+                                  if(Get.currentRoute.compareTo(RouteName.courses) == 0) {
+                                    return;
+                                  }
+                                  Get.close(0);
+                                  Get.toNamed(RouteName.courses);
+                                },
                               ),
                               QuickLinkWidget(
                                 icon: LineIcons.youtube,

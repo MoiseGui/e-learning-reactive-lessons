@@ -21,3 +21,4 @@ part 'secondary_button.dart';
 part 'slide_drawer.dart';
 part 'dashboard/quick_stat_widget.dart';
 part 'dashboard/course_cell.dart';
+part 'dashboard/single_course_stat_widget.dart';

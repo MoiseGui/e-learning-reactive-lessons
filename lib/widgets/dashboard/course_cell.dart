@@ -3,10 +3,12 @@ part of '../widgets.dart';
 class CourseCell extends StatelessWidget {
   final Course course;
 
+  final onTap;
+
   const CourseCell({
     Key? key, required this.course,
     // @required this.landmark,
-    // @required this.onTap,
+    @required this.onTap,
   }) : super(key: key);
 
   @override
@@ -20,7 +22,7 @@ class CourseCell extends StatelessWidget {
               vertical: 2.0,
             ),
             onTap: (){
-
+              onTap();
             },
             leading: course.image != null ? Image.network(course.image!)
             : Image.network(

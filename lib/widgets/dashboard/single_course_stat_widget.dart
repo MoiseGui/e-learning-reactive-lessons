@@ -1,19 +1,17 @@
 part of '../widgets.dart';
 
-class QuickLinkWidget extends StatelessWidget {
+class SingleCourseStatWidget extends StatelessWidget {
   final IconData? icon;
   final String value;
   final String text;
   final Color? color;
-  final onTap;
 
-  const QuickLinkWidget(
+  const SingleCourseStatWidget(
       {Key? key,
       this.icon,
       required this.value,
       required this.text,
-      this.color,
-      this.onTap})
+      this.color})
       : super(key: key);
 
   @override
@@ -26,50 +24,40 @@ class QuickLinkWidget extends StatelessWidget {
           color: const Color(0xFF222222),
         ),
         // color: const Color(0xFF222222),
-        width: Responsive.isDesktop(context) ? 200 : 150,
+        width: Responsive.isDesktop(context) ? 200 : 130,
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(15, 20, 15, 20),
+          padding: const EdgeInsets.all(10),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const SizedBox(
-                height: 10,
-              ),
+              // const SizedBox(
+              //   height: 5,
+              // ),
               Icon(
                 icon ?? LineIcons.school,
-                size: 35.0,
+                size: 30.0,
                 color: Colors.white,
               ),
               const SizedBox(
-                height: 15,
+                height: 5,
               ),
-              Text(
-                value,
-                style: TextStyle(fontSize: 22, color: color ?? Colors.green),
-              ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 5),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
+                    value,
+                    style: TextStyle(fontSize: 22, color: color ?? Colors.green),
+                  ),
+                  Text(
                     text,
                     style: const TextStyle(fontSize: 15),
                   ),
-                  IconButton(
-                    onPressed: () {
-                      if(onTap != null) onTap();
-                    },
-                    icon: const Icon(
-                      LineIcons.chevronCircleRight,
-                      size: 25.0,
-                      color: Colors.blue,
-                    ),
-                  )
                 ],
               ),
-              const SizedBox(
-                height: 10,
-              ),
+              // const SizedBox(
+              //   height: 5,
+              // ),
             ],
           ),
         ),
