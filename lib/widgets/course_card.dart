@@ -13,6 +13,7 @@ class CourseCard extends StatelessWidget {
     String description = course.description;
     String? username = course.username;
     String? image = course.image;
+    BigInt views  = course.numViews;
 
     return Card(
       borderOnForeground: true,
@@ -69,10 +70,16 @@ class CourseCard extends StatelessWidget {
                             onTap: () {
                               // Get.toNamed(RouteName.loginPage);
                             },
-                            child: Icon(
-                              LineIcons.verticalEllipsis,
-                              color: whiteColor,
-                              size: 30,
+                            child: Row(
+                              children: [
+                                Icon(
+                                  LineIcons.eye,
+                                  color: whiteColor,
+                                  size: 20,
+                                ),
+                                const SizedBox(width: 10),
+                                Text(views.toString()),
+                              ],
                             ),
                           ),
                         ],

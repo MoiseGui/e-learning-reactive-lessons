@@ -1,7 +1,7 @@
 part of 'models.dart';
 
 class Course {
-  String _id;
+  String id;
   BigInt numViews;
   String title;
   String description;
@@ -12,7 +12,8 @@ class Course {
   List<String> paragraphs;
   List<Quiz> quiz;
 
-  Course(this._id, this.numViews, this.title, this.description, this.image, this.username, this.categoryId, this.video, this.paragraphs, this.quiz);
+  Course(this.id, this.numViews, this.title, this.description, this.image, this.username, this.categoryId, this.video, this.paragraphs, this.quiz);
+
 
   static Course parse(data){
     var allQuiz = data['quiz'];

@@ -14,6 +14,7 @@ class CourseDetail extends StatefulWidget {
 class _CourseDetailState extends State<CourseDetail> {
   // final TargetPlatform? _platform = TargetPlatform.android;
   final TargetPlatform? _platform = TargetPlatform.iOS;
+  final CourseController _courseController = Get.find();
   late VideoPlayerController _videoPlayerController;
   ChewieController? _chewieController;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -55,6 +56,7 @@ class _CourseDetailState extends State<CourseDetail> {
     );
     _createChewieController();
     setState(() {});
+    _courseController.updateCoursesViews(widget.course.id);
   }
 
   void _createChewieController() {
