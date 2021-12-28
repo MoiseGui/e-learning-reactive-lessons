@@ -2,15 +2,22 @@ import 'package:elearning/pages/pages.dart';
 import 'package:elearning/routes/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:elearning/theme.dart';
+import 'package:get/get_instance/src/extension_instance.dart';
 import 'package:get/route_manager.dart';
+
+import 'controllers/controllers.dart';
 
 
 void main() {
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  MyApp({Key? key}) : super(key: key);
+
+  final _courseController = Get.put(CourseController());
+  final _categoryController = Get.put(CategoryController());
+  final _userController = Get.put(UserController());
 
   // This widget is the root of the application.
   @override

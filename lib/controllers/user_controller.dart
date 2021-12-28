@@ -1,6 +1,8 @@
 part of 'controllers.dart';
 
 class UserController extends GetxController {
+  final CourseController _courseController = Get.find();
+  final CategoryController _categoryController = Get.find();
   var id = ''.obs;
   var username = ''.obs;
   String? token = '';
@@ -23,6 +25,8 @@ class UserController extends GetxController {
               .successDialog("Vous vous êtes connecté avec succès", () {
             Get.close(0);
             if(user.id != null && user.roles != null) {
+              // await _categoryController.loadAllCategories();
+              // await _courseController.loadAllCourses();
               print("User is Logged In");
               if(User.isEtudiant( user.roles)) {
                 print("As a Student");

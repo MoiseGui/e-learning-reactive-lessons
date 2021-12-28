@@ -1,7 +1,6 @@
 part of 'controllers.dart';
 
 class CourseController extends GetxController {
-  final _userController = Get.put(UserController());
 
   var user;
 

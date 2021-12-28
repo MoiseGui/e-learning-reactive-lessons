@@ -2,6 +2,7 @@ part of 'pages.dart';
 
 class LoginPage extends StatefulWidget {
   late bool load;
+
   LoginPage({Key? key, required this.load}) : super(key: key);
 
   @override
@@ -11,9 +12,11 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final _keyForm = GlobalKey<FormState>();
 
-  final _courseController = Get.put(CourseController());
-  final _categoryController = Get.put(CategoryController());
-  final _userController = Get.put(UserController());
+  // final _courseController = Get.put(CourseController());
+  // final _categoryController = Get.put(CategoryController());
+  // final _userController = Get.put(UserController());
+
+  final UserController _userController = Get.find();
 
   bool _loading = true;
 
@@ -33,19 +36,25 @@ class _LoginPageState extends State<LoginPage> {
     });
     user = await AuthService().checkAuth(redirect: false);
     Future.delayed(const Duration(seconds: 2), () {
-      setState(() {
-        if (user != null) {
-          print("User is Logged In");
-          if (User.isEtudiant(user.roles)) {
-            Get.close(0);
-            Get.toNamed(RouteName.home);
-          } else if (User.isProfesseur(user.roles)) {
-            Get.close(0);
-            Get.toNamed(RouteName.dashboard);
-          }
-        } else {
-          _loading = false;
+      if (user != null) {
+        print("User is Logged In");
+        // await _categoryController.loadAllCategories();
+        // await _courseController.loadAllCourses();
+
+        if (User.isEtudiant(user.roles)) {
+          Get.close(0);
+          Get.toNamed(RouteName.home);
+          return;
         }
+
+        if (User.isProfesseur(user.roles)) {
+          Get.close(0);
+          Get.toNamed(RouteName.dashboard);
+          return;
+        }
+      }
+      setState(() {
+        _loading = false;
       });
     });
   }
@@ -105,26 +114,31 @@ class _LoginPageState extends State<LoginPage> {
 
   Widget loagingPage() {
     var sizeScreen = MediaQuery.of(context).size;
-    return
-      SafeArea(
+    return SafeArea(
         child: SizedBox(
-          width: sizeScreen.width,
-          height: sizeScreen.height,
-          child: Padding(
-            padding: const EdgeInsets.only(top: 100),
-            child: Column(
-              children: [
-                Image.asset(
-                  "assets/illus/Education-Illustration-Kit-02.png",
-                ),
-                Text("Bienvenue sur E-leaning", style: whiteTextFont.copyWith(fontSize: 22)),
-                const SizedBox(height: 20),
-                const CircularProgressIndicator(),
-              ],
+      width: sizeScreen.width,
+      height: sizeScreen.height,
+      child: Padding(
+        padding: const EdgeInsets.only(top: 100),
+        child: Column(
+          children: [
+            Responsive(
+              mobile: Image.asset(
+                "assets/illus/Education-Illustration-Kit-02.png",
+              ),
+              desktop: Image.asset(
+                "assets/illus/Education-Illustration-Kit-02.png",
+                width: 100,
+              ),
             ),
-          ),
-        )
-    );
+            Text("Bienvenue sur E-leaning",
+                style: whiteTextFont.copyWith(fontSize: 22)),
+            const SizedBox(height: 20),
+            const CircularProgressIndicator(),
+          ],
+        ),
+      ),
+    ));
   }
 
   Widget desktop() {

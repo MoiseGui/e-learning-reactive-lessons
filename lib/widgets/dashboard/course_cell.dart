@@ -1,10 +1,10 @@
 part of '../widgets.dart';
 
 class CourseCell extends StatelessWidget {
-  // final Landmark landmark;
+  final Course course;
 
   const CourseCell({
-    Key? key,
+    Key? key, required this.course,
     // @required this.landmark,
     // @required this.onTap,
   }) : super(key: key);
@@ -22,11 +22,12 @@ class CourseCell extends StatelessWidget {
             onTap: (){
 
             },
-            leading: Image.asset(
-              'assets/illus/Education Illustration Kit-06.png',
-              width: 50.0,
+            leading: course.image != null ? Image.network(course.image!)
+            : Image.network(
+              'https://image.freepik.com/free-photo/close-up-image-programer-working-his-desk-office_1098-18707.jpg',
+              width: 30.0,
             ),
-            title: Text("landmark.name"),
+            title: Text(course.title),
             trailing: Row(
               mainAxisSize: MainAxisSize.min,
               children: const <Widget>[

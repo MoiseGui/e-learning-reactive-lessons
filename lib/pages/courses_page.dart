@@ -8,7 +8,8 @@ class CoursesPage extends StatefulWidget {
 }
 
 class _CoursesPageState extends State<CoursesPage> {
-  final _userController = Get.put(UserController());
+  final UserController _userController = Get.find();
+  final CourseController _courseController = Get.find();
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -22,52 +23,69 @@ class _CoursesPageState extends State<CoursesPage> {
   Gravatar? _gravatar;
   bool _loading = false;
   var user;
+  List<Course> myCourses = [];
 
   Future<void> _initUserData() async {
-    _loading = true;
-    user = await AuthService().checkAuth(miniMumRole: ROLE_PROFESSEUR);
     setState(() {
-      if (user == null) {
-        print("User not connected");
-        Get.offNamed(RouteName.loginPage);
-      }
+      _loading = true;
+    });
+    user = await AuthService().checkAuth();
 
+    setState(() {
       if (user.email != null && user.email != "") {
         _gravatar = Gravatar(user.email);
       }
-
-      _loading = false;
+      _loading = true;
     });
+  }
+
+  Future<void> _initData() async {
+    try {
+      setState(() {
+        _loading = true;
+      });
+      await _courseController.loadAllCourses();
+      setState(() {
+        myCourses = _courseController.courses;
+        _loading = false;
+      });
+    } catch (e) {
+      print(e);
+      setState(() {
+        _loading = false;
+      });
+    }
   }
 
   @override
   void initState() {
     _initUserData();
+    _initData();
   }
 
   Future<bool> _logout() async {
     return (await showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Êtes vous sûr ?'),
-        content: const Text('Voulez vous vraiment vous déconnecter ?'),
-        actions: <Widget>[
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('Non'),
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Text('Êtes vous sûr ?'),
+            content: const Text('Voulez vous vraiment vous déconnecter ?'),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(false),
+                child: const Text('Non'),
+              ),
+              TextButton(
+                onPressed: () {
+                  _userController.logout();
+                  Navigator.of(context).pop(true);
+                  Get.close(0);
+                  Get.toNamed(RouteName.home);
+                },
+                child: const Text('Oui, Je me déconnecte'),
+              ),
+            ],
           ),
-          TextButton(
-            onPressed: () {
-              _userController.logout();
-              Navigator.of(context).pop(true);
-              Get.close(0);
-              Get.toNamed(RouteName.home);
-            },
-            child: const Text('Oui, Je me déconnecte'),
-          ),
-        ],
-      ),
-    )) ??
+        )) ??
         false;
   }
 
@@ -114,10 +132,10 @@ class _CoursesPageState extends State<CoursesPage> {
           if (Responsive.isDesktop(context))
             Center(
               child:
-              // Obx(
-              //                 () =>
-              Text(
-                "Hi, ${user.username} 👋",
+                  // Obx(
+                  //                 () =>
+                  Text(
+                "Hi, ${user!.username ?? ''} 👋",
                 style: whiteTextFont.copyWith(
                   fontSize: 18,
                   fontWeight: FontWeight.w500,
@@ -134,8 +152,8 @@ class _CoursesPageState extends State<CoursesPage> {
                   borderRadius: BorderRadius.circular(8.0),
                   child: !_loading
                       ? Image.network(
-                    _gravatar!.imageUrl(),
-                  )
+                          _gravatar!.imageUrl(),
+                        )
                       : null,
                 ),
                 backgroundColor: Colors.grey,
@@ -152,19 +170,30 @@ class _CoursesPageState extends State<CoursesPage> {
         child: Padding(
           padding: const EdgeInsets.all(24.0),
           child: RefreshIndicator(
-            onRefresh: _initUserData,
+            onRefresh: _initData,
             child: ListView(
               children: [
-                const Text(
-                  'AU TOTAL 12',
-                  style: TextStyle(fontSize: 17, fontWeight: FontWeight.w400),
+                Text(
+                  'AU TOTAL ' + myCourses.length.toString() + ' COURS',
+                  style: const TextStyle(
+                      fontSize: 17, fontWeight: FontWeight.w400),
                 ),
                 const SizedBox(height: 15),
-                Column(
-                  children: <Widget>[
-                    CourseCell(),
-                  ],
+                Wrap(
+                  spacing: 16,
+                  runSpacing: 16,
+                  alignment: WrapAlignment.start,
+                  children: _loading
+                      ? [
+                          const Center(
+                            child: CircularProgressIndicator(),
+                          ),
+                        ]
+                      : listCourseCard(myCourses),
                 ),
+                // Column(
+                //   children: listCourseCard(),
+                // ),
               ],
             ),
           ),
@@ -173,35 +202,44 @@ class _CoursesPageState extends State<CoursesPage> {
     );
   }
 
-  Widget _imageView() {
-    return Container(
-      height: 250.0,
-      width: double.infinity,
-      child: Center(
-        child: Container(
-          decoration: BoxDecoration(
-            color: Colors.white,
-            border: Border.all(
-              width: 4.0,
-              color: Colors.transparent,
-            ),
-            boxShadow: const [
-              BoxShadow(
-                color: Color(0x22000000),
-                blurRadius: 10.0,
-                spreadRadius: 10.0,
+  List<Widget> listCourseCard(courses) {
+    List<Widget> list = [];
+
+    // var data = DataDummy();
+
+    CourseCell card;
+
+    if (courses != null) {
+      for (var i = 0; i < courses.length; i++) {
+        card = CourseCell(course: courses[i]);
+        list.add(card);
+      }
+    }
+
+    if (list.isEmpty) {
+      list = [
+        Column(
+          children: [
+            const SizedBox(height: 30),
+            const Center(
+              child: Text(
+                "Aucun cours pour le moment.",
+                style: TextStyle(fontSize: 20),
               ),
-            ],
-            borderRadius: const BorderRadius.all(const Radius.circular(125.0)),
-          ),
-          width: 250.0,
-          height: 250.0,
-          child: ClipRRect(
-            borderRadius: const BorderRadius.all(const Radius.circular(120.0)),
-            child: Image.asset('assets/illus/Education Illustration Kit-06.png'),
-          ),
-        ),
-      ),
-    );
+            ),
+            const Center(
+              child: Text("Tirez vers le bas pour rafraichir."),
+            ),
+            const SizedBox(height: 20),
+            Image.asset(
+              "assets/illus/noData.png",
+              height: 300,
+            ),
+          ],
+        )
+      ];
+    }
+
+    return list;
   }
 }

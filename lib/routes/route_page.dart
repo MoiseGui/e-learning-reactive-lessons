@@ -6,7 +6,7 @@ abstract class RouteName {
   static const register = "/register";
   static const home = "/home";
   static const dashboard = "/dashboard";
-  static const courses = "/dashboard/courses";
+  static const courses = "/my-courses";
 }
 
 class RoutePage {
