@@ -29,7 +29,7 @@ class _CoursesPageState extends State<CoursesPage> {
     setState(() {
       _loading = true;
     });
-    user = await AuthService().checkAuth();
+    user = await AuthService().checkAuth(miniMumRole: ROLE_PROFESSEUR);
 
     setState(() {
       if (user.email != null && user.email != "") {

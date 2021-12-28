@@ -39,15 +39,21 @@ class _DashboardState extends State<Dashboard> {
   }
 
   Future<void> _initData() async {
-    setState(() {
-      _loading = true;
-    });
-
-    await _courseController.loadAllCourses();
-    setState(() {
-      myCourses = _courseController.myCourses;
-      _loading = false;
-    });
+    try {
+      setState(() {
+        _loading = true;
+      });
+      await _courseController.loadAllCourses();
+      setState(() {
+        myCourses = _courseController.courses;
+        _loading = false;
+      });
+    } catch (e) {
+      print(e);
+      setState(() {
+        _loading = false;
+      });
+    }
   }
 
   BigInt countViews(List<Course> courses) {
@@ -59,7 +65,7 @@ class _DashboardState extends State<Dashboard> {
     return views;
   }
 
-  int countQuizzes(List<Course>  courses) {
+  int countQuizzes(List<Course> courses) {
     int nbrQuizzes = 0;
     courses.forEach((c) {
       nbrQuizzes += c.quiz.length;
@@ -220,28 +226,34 @@ class _DashboardState extends State<Dashboard> {
                       spacing: 10,
                       runSpacing: 10,
                       alignment: WrapAlignment.start,
-                      children: [
-                        QuickLinkWidget(
-                          icon: LineIcons.school,
-                          value: myCourses.length.toString(),
-                          text: "Cours",
-                        ),
-                        QuickLinkWidget(
-                          icon: LineIcons.youtube,
-                          value: countViews(myCourses).toString(),
-                          text: "Vues",
-                        ),
-                        QuickLinkWidget(
-                          icon: LineIcons.flask,
-                          value: countQuizzes(myCourses).toString(),
-                          text: "Quiz",
-                        ),
-                        QuickLinkWidget(
-                          icon: LineIcons.chalkboard,
-                          value: successRate(myCourses),
-                          text: "Réussite",
-                        ),
-                      ],
+                      children: _loading
+                          ? [
+                              const Center(
+                                child: CircularProgressIndicator(),
+                              ),
+                            ]
+                          : [
+                              QuickLinkWidget(
+                                icon: LineIcons.school,
+                                value: myCourses.length.toString(),
+                                text: "Cours",
+                              ),
+                              QuickLinkWidget(
+                                icon: LineIcons.youtube,
+                                value: countViews(myCourses).toString(),
+                                text: "Vues",
+                              ),
+                              QuickLinkWidget(
+                                icon: LineIcons.flask,
+                                value: countQuizzes(myCourses).toString(),
+                                text: "Quiz",
+                              ),
+                              QuickLinkWidget(
+                                icon: LineIcons.chalkboard,
+                                value: successRate(myCourses),
+                                text: "Réussite",
+                              ),
+                            ],
                     ),
                   ],
                 ),
