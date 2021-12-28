@@ -2,6 +2,7 @@ part of 'models.dart';
 
 class Course {
   String id;
+  String email;
   BigInt numViews;
   String title;
   String description;
@@ -12,8 +13,7 @@ class Course {
   List<String> paragraphs;
   List<Quiz> quiz;
 
-  Course(this.id, this.numViews, this.title, this.description, this.image, this.username, this.categoryId, this.video, this.paragraphs, this.quiz);
-
+  Course(this.id, this.email, this.numViews, this.title, this.description, this.image, this.username, this.categoryId, this.video, this.paragraphs, this.quiz);
 
   static Course parse(data){
     var allQuiz = data['quiz'];
@@ -39,6 +39,6 @@ class Course {
       paragraphs.add(para);
     }
 
-    return Course(data['_id'].toString(), BigInt.from(data['numViews']), data['title'].toString(), data['description'].toString(), data['image'].toString(), data['username'].toString(), data['categoryId'].toString(), data['video'].toString(), paragraphs, quiz);
+    return Course(data['_id'].toString(), data['email'].toString(), BigInt.from(data['numViews']), data['title'].toString(), data['description'].toString(), data['image'].toString(), data['username'].toString(), data['categoryId'].toString(), data['video'].toString(), paragraphs, quiz);
   }
 }

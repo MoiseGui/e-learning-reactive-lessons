@@ -1,6 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
-import 'dart:io';
 
 import 'package:chewie/chewie.dart';
 import 'package:elearning/controllers/controllers.dart';
@@ -23,11 +21,11 @@ import 'package:line_icons/line_icons.dart';
 import 'package:material_dialogs/material_dialogs.dart';
 import 'package:material_dialogs/widgets/buttons/icon_button.dart';
 import 'package:material_dialogs/widgets/buttons/icon_outline_button.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:video_player/video_player.dart';
 
 part '../home_page.dart';
 part 'course_detail.dart';
+part 'courses_page.dart';
+part 'dashboard.dart';
 part 'login_page.dart';
 part 'register_page.dart';
-part 'dashboard.dart';
