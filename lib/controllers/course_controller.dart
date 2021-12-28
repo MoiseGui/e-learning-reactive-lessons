@@ -78,11 +78,10 @@ class CourseController extends GetxController {
       // print("here to fetch");
       // final response = await _dio.get('/');
       Map<String, String> headers = {
-        'Accept': 'application/json',
+        'Content-type': 'application/json',
+        'Accept': '*/*',
         'Authorization': 'Bearer ${user.token}',
       };
-      var response = Reponse.all(
-          user.firstname + " " + user.lastname, correct, beginTime.inSeconds);
 
       var uri = Uri.parse(apiHost + courseRespondPath + '/?id=$id');
 
@@ -92,9 +91,9 @@ class CourseController extends GetxController {
         "beginTime": beginTime.inSeconds.toString()
       };
 
-      final result = await put(uri, headers: headers, body: body);
+      final result = await put(uri, headers: headers, body: jsonEncode(body));
       final resultJson = jsonDecode(result.body);
-
+      print("result: "+ resultJson["course"]["quiz"][0]["responses"].toString());
       if (resultJson != null && resultJson["course"] != null) {
         // print('hey result');
         Course updatedCourse = Course.parse(resultJson["course"]);

@@ -199,7 +199,9 @@ class _CourseDetailState extends State<CourseDetail> {
             }
 
             if(!respondedQuizzes.contains(quiz.beginTime.inMilliseconds)){
+              print("i am answering");
               _courseController.courseRespond(widget.course.id, quiz.beginTime, success);
+              print("i answered already");
               respondedQuizzes.add(quiz.beginTime.inMilliseconds);
             }
 
