@@ -23,6 +23,8 @@ class _CourseDetailState extends State<CourseDetail> {
 
   Duration? quizToRedoPosition;
 
+  List<int> respondedQuizzes = [];
+
   @override
   void initState() {
     super.initState();
@@ -194,6 +196,11 @@ class _CourseDetailState extends State<CourseDetail> {
                 break;
                 }
               }
+            }
+
+            if(!respondedQuizzes.contains(quiz.beginTime.inMilliseconds)){
+              _courseController.courseRespond(widget.course.id, quiz.beginTime, success);
+              respondedQuizzes.add(quiz.beginTime.inMilliseconds);
             }
 
             if (success) {

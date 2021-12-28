@@ -28,7 +28,7 @@ class Course {
       var responseList = singleQuiz['responses'];
       List<Reponse> responses = [];
       for(var resp in responseList){
-        responses.add(Reponse(resp['name'], resp['correct']));
+        responses.add(Reponse(resp['name'], resp['correct'].toString().toLowerCase() == 'true'));
       }
 
       quiz.add(Quiz(singleQuiz['question'].toString(), Duration(seconds: singleQuiz['beginTime']), Duration(seconds: singleQuiz['endTime']), singleQuiz['uniqueChoice'], choices, responses));
