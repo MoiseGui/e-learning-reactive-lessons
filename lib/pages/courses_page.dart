@@ -46,7 +46,7 @@ class _CoursesPageState extends State<CoursesPage> {
       });
       await _courseController.loadAllCourses();
       setState(() {
-        myCourses = _courseController.courses;
+        myCourses = _courseController.myCourses;
         _loading = false;
       });
     } catch (e) {

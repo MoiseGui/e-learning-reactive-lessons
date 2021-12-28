@@ -45,7 +45,7 @@ class _DashboardState extends State<Dashboard> {
       });
       await _courseController.loadAllCourses();
       setState(() {
-        myCourses = _courseController.courses;
+        myCourses = _courseController.myCourses;
         _loading = false;
       });
     } catch (e) {
@@ -212,7 +212,7 @@ class _DashboardState extends State<Dashboard> {
         child: Padding(
           padding: const EdgeInsets.all(24.0),
           child: RefreshIndicator(
-            onRefresh: _initUserData,
+            onRefresh: _initData,
             child: ListView(
               children: [
                 const Text(

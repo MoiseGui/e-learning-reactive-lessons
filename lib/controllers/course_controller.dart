@@ -31,9 +31,10 @@ class CourseController extends GetxController {
     if (list != null) {
       // print('hey result');
       courses = [];
+      myCourses = [];
       for (var course in list) {
         Course c = Course.parse(course);
-        if (user != null && user.email.compareTo(c.email) == 0) {
+        if (user != null && user.email == c.email) {
           myCourses.add(c);
         }
         courses.add(c);
