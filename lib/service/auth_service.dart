@@ -7,7 +7,7 @@ class AuthService extends GetConnect {
       'password': password,
     };
 
-    print("REQUEST: "+apiHost + loginPath);
+    // print("REQUEST: "+apiHost + loginPath);
 
     return post(
       apiHost + loginPath,
@@ -23,7 +23,7 @@ class AuthService extends GetConnect {
       'lastname': lastname,
     };
 
-    print("REQUEST: "+apiHost + registerPath);
+    // print("REQUEST: "+apiHost + registerPath);
 
     return post(
       apiHost + registerPath,
@@ -40,7 +40,7 @@ class AuthService extends GetConnect {
     if(userString != null) user = User.fromJson(jsonDecode(userString));
 
     if (user == null || user.token == null || user.token == "" || Jwt.isExpired(user.token)) {
-      print("User not connected or token expired");
+      // print("User not connected or token expired");
       _sharePref.clear();
       if(redirect) Get.offNamed(RouteName.loginPage);
     }

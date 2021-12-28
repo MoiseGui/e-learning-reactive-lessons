@@ -27,13 +27,13 @@ class UserController extends GetxController {
             if(user.id != null && user.roles != null) {
               // await _categoryController.loadAllCategories();
               // await _courseController.loadAllCourses();
-              print("User is Logged In");
+              // print("User is Logged In");
               if(User.isEtudiant( user.roles)) {
-                print("As a Student");
+                // print("As a Student");
                 Get.offNamed(RouteName.home);
                 // Get.toNamed(RouteName.home);
               } else if(User.isProfesseur( user.roles)) {
-                print("As a Prof");
+                // print("As a Prof");
                 // Get.toNamed(RouteName.dashboard);
                 Get.offNamed(RouteName.dashboard);
               }
@@ -54,7 +54,7 @@ class UserController extends GetxController {
         }
       });
     } catch (e) {
-      print("Error login: " + e.toString());
+      // print("Error login: " + e.toString());
       Get.snackbar(
         "Une erreur est survenue.",
         "Veuillez vérifier votre connexion internet.",
@@ -94,7 +94,7 @@ class UserController extends GetxController {
         }
       });
     } catch (e) {
-      print("Error register: " + e.toString());
+      // print("Error register: " + e.toString());
       Get.snackbar(
         "Une erreur est survenue.",
         "Veuillez vérifier votre connexion internet.",
@@ -107,7 +107,7 @@ class UserController extends GetxController {
   }
 
   _saveData(User user) async {
-    print("SAVE_USER");
+    // print("SAVE_USER");
     try {
       final _sharePref = await SharedPreferences.getInstance();
 
@@ -118,7 +118,7 @@ class UserController extends GetxController {
       // _sharePref.setStringList('roles', user.roles);
       _sharePref.setString('user', jsonEncode(user.toJson()));
     } catch (e) {
-      print("ERREUR IN SAVE_DATA " + e.toString());
+      // print("ERREUR IN SAVE_DATA " + e.toString());
     }
   }
 

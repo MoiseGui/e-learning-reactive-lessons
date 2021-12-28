@@ -37,7 +37,7 @@ class _LoginPageState extends State<LoginPage> {
     user = await AuthService().checkAuth(redirect: false);
     Future.delayed(const Duration(seconds: 2), () {
       if (user != null) {
-        print("User is Logged In");
+        // print("User is Logged In");
         // await _categoryController.loadAllCategories();
         // await _courseController.loadAllCourses();
 

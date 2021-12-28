@@ -62,7 +62,7 @@ class CourseController extends GetxController {
       if (resultJson != null && resultJson["course"] != null) {
         // print('hey result');
         Course updatedCourse = Course.parse(resultJson["course"]);
-        print("updated: " + updatedCourse.numViews.toString());
+        // print("updated: " + updatedCourse.numViews.toString());
         courses = courses
             .map((c) =>
                 c.id.compareTo(updatedCourse.id) == 0 ? updatedCourse : c)
@@ -93,7 +93,7 @@ class CourseController extends GetxController {
 
       final result = await put(uri, headers: headers, body: jsonEncode(body));
       final resultJson = jsonDecode(result.body);
-      print("result: "+ resultJson["course"]["quiz"][0]["responses"].toString());
+      // print("result: "+ resultJson["course"]["quiz"][0]["responses"].toString());
       if (resultJson != null && resultJson["course"] != null) {
         // print('hey result');
         Course updatedCourse = Course.parse(resultJson["course"]);

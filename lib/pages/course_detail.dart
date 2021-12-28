@@ -115,7 +115,7 @@ class _CourseDetailState extends State<CourseDetail> {
 
   _goBackTo(Duration duration) {
     _videoPlayerController.seekTo(duration);
-    print("player seeked to: ${_videoPlayerController.position}");
+    // print("player seeked to: ${_videoPlayerController.position}");
     // _continuePlaying();
   }
 
@@ -125,7 +125,7 @@ class _CourseDetailState extends State<CourseDetail> {
     Future.delayed(const Duration(milliseconds: 1000), () {
       // Do something
       quizToRedoPosition = Duration(seconds: endTime.inSeconds);
-      print("hehe: " + quizToRedoPosition.toString());
+      // print("hehe: " + quizToRedoPosition.toString());
     });
   }
 
@@ -141,7 +141,7 @@ class _CourseDetailState extends State<CourseDetail> {
       quiz = _quizService.getQuizByMoment(position, true);
     }
     if (quiz != null) {
-      print("FOUND");
+      // print("FOUND");
       _videoPlayerController.pause();
       _showDialog(context, quiz);
     }
@@ -199,9 +199,7 @@ class _CourseDetailState extends State<CourseDetail> {
             }
 
             if(!respondedQuizzes.contains(quiz.beginTime.inMilliseconds)){
-              print("i am answering");
               _courseController.courseRespond(widget.course.id, quiz.beginTime, success);
-              print("i answered already");
               respondedQuizzes.add(quiz.beginTime.inMilliseconds);
             }
 
