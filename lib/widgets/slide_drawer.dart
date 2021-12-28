@@ -81,9 +81,15 @@ class SlideDrawer extends StatelessWidget {
               ),
               size: 24,
               onPress: () {
-                Get.close(1);
-
-                Get.to(EmptyWidget());
+                if(Get.currentRoute.compareTo(RouteName.courses) == 0) {
+                  Get.close(1);
+                  return;
+                }
+                Get.close(2);
+                Get.toNamed(RouteName.courses);
+                // Get.close(1);
+                //
+                // Get.to(EmptyWidget());
               },
             ),
             // SecondaryButton(

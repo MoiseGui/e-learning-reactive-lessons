@@ -6,6 +6,7 @@ abstract class RouteName {
   static const register = "/register";
   static const home = "/home";
   static const dashboard = "/dashboard";
+  static const courses = "/dashboard/courses";
 }
 
 class RoutePage {
@@ -29,6 +30,10 @@ class RoutePage {
     GetPage(
         name: RouteName.dashboard,
         page: () => const Dashboard()
+    ),
+    GetPage(
+        name: RouteName.courses,
+        page: () => const CoursesPage()
     ),
   ];
 }
