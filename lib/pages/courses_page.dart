@@ -284,31 +284,16 @@ class _CoursesPageState extends State<CoursesPage> {
               height: 500,
               child: Stack(
                 children: [
-                  Positioned(
-                    right: 0,
-                    top: 0,
-                    width: 30,
-                    child: InkResponse(
-                      onTap: () {
-                        print("HEYYYY");
-                        Get.close(0);
-                      },
-                      child: const CircleAvatar(
-                        child: Icon(Icons.close),
-                        backgroundColor: Colors.red,
-                      ),
-                    ),
-                  ),
                   ListView(
                     children: [
                       Text(
                         course.title,
                         style: const TextStyle(
-                            fontSize: 17, fontWeight: FontWeight.w400),
+                            fontSize: 20, fontWeight: FontWeight.w400),
                       ),
-                      const SizedBox(height: 15),
+                      const SizedBox(height: 5),
                       const Divider(
-                        height: 20.0,
+                        height: 15.0,
                         color: Colors.grey,
                       ),
                       Column(
@@ -338,7 +323,7 @@ class _CoursesPageState extends State<CoursesPage> {
                           ),
                         ],
                       ),
-                      const SizedBox(height: 40),
+                      const SizedBox(height: 10),
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
                             textStyle: const TextStyle(fontSize: 20),
@@ -359,7 +344,38 @@ class _CoursesPageState extends State<CoursesPage> {
                           );
                           // Get.to(CourseDetail(title: title.toString()));
                         },
-                      )
+                      ),
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                            textStyle: const TextStyle(fontSize: 20),
+                            fixedSize: Responsive.isDesktop(context)
+                                ? const Size.fromWidth(308)
+                                : const Size.fromWidth(400),
+                            primary: errorColor,
+                            shape: const RoundedRectangleBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10)))),
+                        child: const Text("Supprimer ce cours"),
+                        onPressed: () {
+
+                        },
+                      ),
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                            textStyle: const TextStyle(fontSize: 20),
+                            fixedSize: Responsive.isDesktop(context)
+                                ? const Size.fromWidth(308)
+                                : const Size.fromWidth(400),
+                            primary: warningColor2,
+                            shape: const RoundedRectangleBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10)))),
+                        child: const Text("Retour"),
+                        onPressed: () {
+                          Get.close(0);
+                          // Get.to(CourseDetail(title: title.toString()));
+                        },
+                      ),
                     ],
                   ),
                 ],
