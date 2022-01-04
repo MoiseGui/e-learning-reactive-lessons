@@ -43,6 +43,7 @@ class AuthService extends GetConnect {
       // print("User not connected or token expired");
       _sharePref.clear();
       if(redirect) Get.offNamed(RouteName.loginPage);
+      return null;
     }
 
     if(miniMumRole != "" && !user.roles.contains(miniMumRole)){

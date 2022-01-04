@@ -14,6 +14,21 @@ class Quiz {
 
   Quiz(this.question, this.beginTime, this.endTime, this.uniqueChoice, this.choices, this.responses);
 
+  Map toJson() {
+    String choicesString = jsonEncode(choices);
+    String responsesString = jsonEncode(responses);
+
+    return {
+      "question": question,
+      "beginTime": beginTime.inSeconds.toString(),
+      "endTime": endTime.inSeconds.toString(),
+      "uniqueChoice": uniqueChoice.toString(),
+      "choices": choicesString,
+      "responses": responsesString
+    };
+
+  }
+
   bool? isShown(){
     return shown;
   }

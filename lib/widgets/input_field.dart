@@ -10,6 +10,9 @@ class InputField extends StatelessWidget {
   final String? Function(String?)? validator;
   final void Function(String?)? savedValue;
   final double marginTop;
+  final keyboardType;
+  final maxLines;
+  final minLines;
 
   const InputField({
     Key? key,
@@ -22,6 +25,9 @@ class InputField extends StatelessWidget {
     this.validator,
     this.savedValue,
     this.marginTop = 16,
+    this.keyboardType = TextInputType.text,
+    this.maxLines = 1,
+    this.minLines = 1,
   }) : super(key: key);
 
   @override
@@ -30,6 +36,9 @@ class InputField extends StatelessWidget {
       height: 80,
       margin: EdgeInsets.only(top: marginTop),
       child: TextFormField(
+        keyboardType: keyboardType,
+        minLines: minLines,
+        maxLines: maxLines,
         controller: userInputController,
         validator: validator,
         onSaved: savedValue,
@@ -44,6 +53,7 @@ class InputField extends StatelessWidget {
           hintStyle: greyTextFont,
           labelText: labelText,
           labelStyle: greyTextFont.copyWith(),
+          errorStyle: TextStyle(color: errorColor),
           errorBorder: OutlineInputBorder(
             borderSide: BorderSide(
               width: 2,

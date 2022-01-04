@@ -49,7 +49,7 @@ class _DashboardState extends State<Dashboard> {
         _loading = false;
       });
     } catch (e) {
-      print(e);
+      // print(e);
       setState(() {
         _loading = false;
       });
@@ -163,11 +163,13 @@ class _DashboardState extends State<Dashboard> {
               cursor: SystemMouseCursors.click,
               child: LineIcon(LineIcons.plus, color: Colors.white),
             ),
-            onTap: () {
+            onTap: () async {
               // Get.defaultDialog(
               // title: '',
               // content: const ChoiseClassOption(),
               // );
+              await Get.to(CourseFrom());
+              _initData();
             },
           ),
           if (Responsive.isDesktop(context)) const SizedBox(width: 30),

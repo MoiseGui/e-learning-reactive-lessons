@@ -269,11 +269,13 @@ class _HomePageState extends State<HomePage> {
                 cursor: SystemMouseCursors.click,
                 child: LineIcon(LineIcons.plus, color: Colors.white),
               ),
-              onTap: () {
+              onTap: () async {
                 // Get.defaultDialog(
                 // title: '',
                 // content: const ChoiseClassOption(),
                 // );
+                await Get.to(CourseFrom());
+                _initData();
               },
             ),
           if (Responsive.isDesktop(context) && isLoggedIn)

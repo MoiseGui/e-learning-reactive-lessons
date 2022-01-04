@@ -121,11 +121,13 @@ class _CoursesPageState extends State<CoursesPage> {
               cursor: SystemMouseCursors.click,
               child: LineIcon(LineIcons.plus, color: Colors.white),
             ),
-            onTap: () {
+            onTap: () async {
               // Get.defaultDialog(
               // title: '',
               // content: const ChoiseClassOption(),
               // );
+              await Get.to(CourseFrom());
+              _initData();
             },
           ),
           if (Responsive.isDesktop(context)) const SizedBox(width: 30),
@@ -280,7 +282,7 @@ class _CoursesPageState extends State<CoursesPage> {
           return AlertDialog(
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(20.0)),
-            content: Container(
+            content: SizedBox(
               height: 500,
               child: Stack(
                 children: [
@@ -345,6 +347,7 @@ class _CoursesPageState extends State<CoursesPage> {
                           // Get.to(CourseDetail(title: title.toString()));
                         },
                       ),
+                      if (Responsive.isDesktop(context)) const SizedBox(height: 20),
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
                             textStyle: const TextStyle(fontSize: 20),
@@ -360,6 +363,7 @@ class _CoursesPageState extends State<CoursesPage> {
 
                         },
                       ),
+                      if (Responsive.isDesktop(context)) const SizedBox(height: 20),
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
                             textStyle: const TextStyle(fontSize: 20),

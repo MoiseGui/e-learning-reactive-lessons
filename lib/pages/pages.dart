@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
 
 import 'package:chewie/chewie.dart';
 import 'package:elearning/controllers/controllers.dart';
@@ -22,6 +24,7 @@ import 'package:material_dialogs/material_dialogs.dart';
 import 'package:material_dialogs/widgets/buttons/icon_button.dart';
 import 'package:material_dialogs/widgets/buttons/icon_outline_button.dart';
 import 'package:video_player/video_player.dart';
+import './course_form.dart';
 
 part '../home_page.dart';
 part 'course_detail.dart';

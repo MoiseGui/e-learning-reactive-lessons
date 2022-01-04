@@ -1,4 +1,3 @@
-
 import 'package:elearning/models/models.dart';
 import 'package:elearning/pages/pages.dart';
 import 'package:elearning/routes/routes.dart';
@@ -13,12 +12,13 @@ part '../responsive.dart';
 part 'course_card.dart';
 // part 'responsive.dart';
 part 'custom_dialog.dart';
+part 'dashboard/course_cell.dart';
+part 'dashboard/quick_stat_widget.dart';
+part 'dashboard/single_course_stat_widget.dart';
 part 'empty_widget.dart';
 part 'header_actions.dart';
 part 'input_field.dart';
 part 'primary_button.dart';
 part 'secondary_button.dart';
+part 'select_field.dart';
 part 'slide_drawer.dart';
-part 'dashboard/quick_stat_widget.dart';
-part 'dashboard/course_cell.dart';
-part 'dashboard/single_course_stat_widget.dart';

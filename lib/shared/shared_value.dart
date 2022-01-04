@@ -1,6 +1,7 @@
 part of "shared.dart";
 
 var apiHost = "https://elearning-fstg.herokuapp.com";
+var localhost = "http://192.168.11.103:3000";
 var loginPath = "/api/auth/login";
 var registerPath = "/api/auth/register";
 var coursesPath = "/api/courses";
@@ -24,6 +25,13 @@ class DialogController {
       content: CustomDialog(msg: msg),
     );
     startTimer(goTo);
+  }
+
+  conditionnalDialog(var title, var msg){
+    Get.defaultDialog(
+      title: title,
+      content: CustomDialog(msg: msg, loading: true),
+    );
   }
 }
 
