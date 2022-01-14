@@ -105,6 +105,42 @@ class CourseController extends GetxController {
     }
   }
 
+  Future deleteCourse(Course course) async{
+    await _init();
+    if(user != null){
+      Map<String, String> headers = {
+        'Content-type': 'application/json',
+        'Accept': '*/*',
+        'Authorization': 'Bearer ${user.token}',
+      };
+      Uri uri = Uri.parse(apiHost+coursesPath+'/?id=${course.id}');
+      var result = await delete(uri, headers: headers);
+
+      if(result.statusCode == 200){
+        courses.removeWhere((element) => element.id == course.id);
+        myCourses.removeWhere((element) => element.id == course.id);
+        // Get.snackbar(
+        //   "Succès.",
+        //   "Ce cours a bien été supprimé.",
+        //   margin: const EdgeInsets.only(top: 10, left: 10, right: 10),
+        //   backgroundColor: successColor,
+        //   colorText: whiteColor,
+        //   duration: const Duration(seconds: 4),
+        // );
+      }
+      else{
+        Get.snackbar(
+          "Connexion échouée.",
+          "une erreur inantandue s'est produite. Vérifiez votre connexion.",
+          margin: const EdgeInsets.only(top: 10, left: 10, right: 10),
+          backgroundColor: errorColor,
+          colorText: whiteColor,
+          duration: const Duration(seconds: 4),
+        );
+      }
+    }
+  }
+
   Future addCourse(Course course, File imageFile, File videoFile, callback) async{
     await _init();
 

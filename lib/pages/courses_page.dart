@@ -22,6 +22,7 @@ class _CoursesPageState extends State<CoursesPage> {
   // String? token = '';
   Gravatar? _gravatar;
   bool _loading = false;
+  bool _deleteLoading = false;
   var user;
   List<Course> myCourses = [];
 
@@ -39,13 +40,14 @@ class _CoursesPageState extends State<CoursesPage> {
     });
   }
 
-  Future<void> _initData() async {
+  Future<void> _initData({bool load = true}) async {
     try {
       setState(() {
         _loading = true;
       });
-      await _courseController.loadAllCourses();
+      if(load) await _courseController.loadAllCourses();
       setState(() {
+        print("HAAA "+_courseController.myCourses.length.toString());
         myCourses = _courseController.myCourses;
         _loading = false;
       });
@@ -336,7 +338,7 @@ class _CoursesPageState extends State<CoursesPage> {
                             shape: const RoundedRectangleBorder(
                                 borderRadius:
                                     BorderRadius.all(Radius.circular(10)))),
-                        child: const Text("Modifier ce cours"),
+                        child: const Text("Voir ce cours"),
                         onPressed: () {
                           Navigator.push(
                             context,
@@ -358,9 +360,26 @@ class _CoursesPageState extends State<CoursesPage> {
                             shape: const RoundedRectangleBorder(
                                 borderRadius:
                                     BorderRadius.all(Radius.circular(10)))),
-                        child: const Text("Supprimer ce cours"),
-                        onPressed: () {
+                        child: Row(
+                          children: [
+                            const Text("Supprimer ce cours"),
+                            if(_deleteLoading) const SizedBox(width: 15),
+                            if(_deleteLoading) const SizedBox(width: 10, height: 10, child: CircularProgressIndicator(color: Colors.white,)),
+                          ],
+                        ),
+                        onPressed: () async {
+                          if(!_deleteLoading) {
+                            setState(() {
+                              _deleteLoading = true;
+                            });
+                            await deleleteCourse(course);
 
+                            _initData();
+
+                            setState(() {
+                              _deleteLoading = false;
+                            });
+                          }
                         },
                       ),
                       if (Responsive.isDesktop(context)) const SizedBox(height: 20),
@@ -387,5 +406,31 @@ class _CoursesPageState extends State<CoursesPage> {
             ),
           );
         });
+  }
+
+  Future<bool> deleleteCourse(Course course) async {
+    return (await showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Êtes vous sûr ?'),
+        content: const Text('Voulez vous vraiment supprimer ce cours ?'),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: const Text('Non'),
+          ),
+          TextButton(
+            onPressed: () async{
+              await _courseController.deleteCourse(course);
+
+              // Navigator.of(context).pop(true);
+              Get.close(2);
+            },
+            child: const Text('Oui, Supprimer'),
+          ),
+        ],
+      ),
+    )) ??
+        false;
   }
 }

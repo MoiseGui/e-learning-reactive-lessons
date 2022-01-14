@@ -21,6 +21,7 @@ class DialogController {
 
   successDialog(var msg, void Function() goTo) {
     Get.defaultDialog(
+      barrierDismissible: false,
       title: '',
       content: CustomDialog(msg: msg),
     );
@@ -31,6 +32,7 @@ class DialogController {
     Get.defaultDialog(
       title: title,
       content: CustomDialog(msg: msg, loading: true),
+      barrierDismissible: false
     );
   }
 }

@@ -984,6 +984,7 @@ class _CourseFormState extends State<CourseFrom> {
 
           if (isFormValid) {
             form.save();
+            title = titleController.text;
             activeStep++;
           }
           break;
