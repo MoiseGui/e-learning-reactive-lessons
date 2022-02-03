@@ -47,6 +47,6 @@ Deployment is available via this link [e-learning-fstg.web.app](e-learning-fstg.
 [Ezaghab Chaimaa](https://github.com/EChaimaa) <br />
 [Hiba Bensouissi](https://github.com/HIBABENS)
 
-For help getting started with Flutter, view our
+For help getting started with Flutter, view the
 [online documentation](https://flutter.dev/docs), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
