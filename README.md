@@ -32,6 +32,15 @@ flutter build ios
 flutter build web
 ```
 
+### Deploy on the web
+```
+firebase login
+firebase deploy
+```
+Deployment is available via this link [e-learning-fstg.web.app](e-learning-fstg.web.app/)
+* Note that you need to be invited on the firebase project.
+* You can also introduce a pull request, i will take care of the rest
+
 ## Authors
 
 [Moïse Gui](https://github.com/MoiseGui) <br />
